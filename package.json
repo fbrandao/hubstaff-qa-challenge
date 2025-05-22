@@ -1,0 +1,38 @@
+{
+  "name": "hubstaff-qa-challenge",
+  "version": "1.0.0",
+  "description": "Playwright Automation QA Task for Hubstaff",
+  "type": "module",
+"scripts": {
+  "test": "npx playwright test",
+  "codegen": "npx playwright codegen https://hubstaff.com",
+  "lint": "eslint . --ext .ts --fix",
+  "lint:check": "eslint . --ext .ts",
+  "format": "prettier --write .",
+  "format:check": "prettier --check .",
+  "validate": "npm run lint:check && npm run format:check"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fbrandao/hubstaff-qa-challenge.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/fbrandao/hubstaff-qa-challenge/issues"
+  },
+  "homepage": "https://github.com/fbrandao/hubstaff-qa-challenge#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.52.0",
+    "@types/node": "^22.15.21",
+    "@typescript-eslint/eslint-plugin": "^8.32.1",
+    "@typescript-eslint/parser": "^8.32.1",
+    "eslint": "^9.27.0",
+    "eslint-config-prettier": "^10.1.5",
+    "eslint-plugin-playwright": "^2.2.0",
+    "eslint-plugin-prettier": "^5.4.0",
+    "prettier": "^3.5.3",
+    "typescript": "^5.4.2"
+  }
+}

@@ -1,0 +1,11 @@
+name: Playwright Tests
+# Placeholder workflow for Playwright tests
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    if: false
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Placeholder - Playwright tests will be added later."
