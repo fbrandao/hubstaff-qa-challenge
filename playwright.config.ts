@@ -1,72 +1,84 @@
 import { defineConfig, devices } from '@playwright/test';
-
-/**
- * Read environment variables from file.
- * https://github.com/motdotla/dotenv
- */
-// import dotenv from 'dotenv';
-// import path from 'path';
-// dotenv.config({ path: path.resolve(__dirname, '.env') });
-
+import { BASE_URL, APP_NAME, isCI } from './utils/constants';
+import os from 'os';
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
-  testDir: './tests',
+  /* The global test directory */
+  testDir: './tests/e2e/',
+
   /* Run tests in files in parallel */
   fullyParallel: true,
+
+  workers: 5,
+
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
+
   /* Retry on CI only */
-  retries: process.env.CI ? 2 : 0,
-  /* Opt out of parallel tests on CI. */
-  workers: process.env.CI ? 1 : undefined,
+  retries: process.env.CI ? 1 : 0,
+
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: 'html',
+  reporter: isCI
+    ? [
+        ['html', { outputFolder: `../reports/e2e` }],
+        ['line'],
+        ['junit', { outputFile: `../reports/e2e/results.xml` }],
+        ['json', { outputFile: `../reports/e2e/results.json` }],
+        ['github'],
+        [
+          'playwright-ctrf-json-reporter',
+          {
+            outputFile: `../reports/e2e/ctrf.json`,
+            appName: APP_NAME,
+            appVersion: '1.0.0',
+            osPlatform: os.platform(),
+            osRelease: os.release(),
+            osVersion: os.version(),
+            buildName: 'Tic-Tac-Toe Build',
+            buildNumber: '100',
+            testEnvironment: 'staging',
+          },
+        ],
+      ]
+    : [['html', { outputFolder: `../reports/e2e` }], ['line']],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
-    // baseURL: 'http://127.0.0.1:3000',
+    baseURL: BASE_URL,
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
   },
+  /* Global setup and teardown */
+  globalSetup: './global-setup.ts',
+  globalTeardown: './global-teardown.ts',
 
-  /* Configure projects for major browsers */
+  /* Define separate projects */
   projects: [
+    /* 🔹 E2E TESTS (Desktop Browsers) */
     {
-      name: 'chrome',
+      name: 'E2E - Chrome',
       use: { ...devices['Desktop Chrome'], channel: 'chromium' },
     },
-
     {
-      name: 'firefox',
+      name: 'E2E - Firefox',
       use: { ...devices['Desktop Firefox'] },
     },
-
     {
-      name: 'webkit',
+      name: 'E2E - Safari',
       use: { ...devices['Desktop Safari'] },
     },
 
-    /* Test against mobile viewports. */
-    // {
-    //   name: 'Mobile Chrome',
-    //   use: { ...devices['Pixel 5'] },
-    // },
-    // {
-    //   name: 'Mobile Safari',
-    //   use: { ...devices['iPhone 12'] },
-    // },
-
-    /* Test against branded browsers. */
-    // {
-    //   name: 'Microsoft Edge',
-    //   use: { ...devices['Desktop Edge'], channel: 'msedge' },
-    // },
-    // {
-    //   name: 'Google Chrome',
-    //   use: { ...devices['Desktop Chrome'], channel: 'chrome' },
-    // },
+    /* 🔹 E2E TESTS (Mobile Browsers) */
+    {
+      name: 'E2E - Mobile Chrome',
+      use: { ...devices['Pixel 7'] },
+    },
+    {
+      name: 'E2E - Mobile Safari',
+      use: { ...devices['iPhone 15'] },
+    },
   ],
 });
