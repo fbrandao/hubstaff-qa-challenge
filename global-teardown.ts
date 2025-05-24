@@ -1,9 +1,9 @@
-import { log } from './utils/logger';
+import { logger } from './utils/logger';
 
 async function globalTeardown() {
-  log.header('Global Teardown');
-  log.message(`Cleanup Done!`, 'success');
-  log.separator();
+  logger.header('Global Teardown');
+  logger.message(`Cleanup Done!`, 'success');
+  logger.separator();
 }
 
 export default globalTeardown;

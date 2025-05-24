@@ -1,5 +1,6 @@
 import { defineConfig, devices } from '@playwright/test';
-import { BASE_URL, APP_NAME, isCI } from './utils/constants';
+import { config } from './utils/config';
+import { isCI } from './utils/env';
 import os from 'os';
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -31,7 +32,7 @@ export default defineConfig({
           'playwright-ctrf-json-reporter',
           {
             outputFile: `../reports/e2e/ctrf.json`,
-            appName: APP_NAME,
+            appName: config.app.name,
             appVersion: '1.0.0',
             osPlatform: os.platform(),
             osRelease: os.release(),
@@ -46,7 +47,7 @@ export default defineConfig({
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
-    baseURL: BASE_URL,
+    baseURL: config.app.baseUrl,
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',

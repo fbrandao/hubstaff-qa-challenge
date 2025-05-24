@@ -36,5 +36,9 @@
     "playwright-ctrf-json-reporter": "^0.0.20",
     "prettier": "^3.5.3",
     "typescript": "^5.4.2"
+  },
+  "dependencies": {
+    "dotenv": "^16.5.0",
+    "mailslurp-client": "^15.23.1"
   }
 }
