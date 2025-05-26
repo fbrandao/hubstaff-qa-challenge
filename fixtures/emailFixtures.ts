@@ -9,6 +9,6 @@ export const test = base.extend<EmailFixtures>({
   emailClient: async ({}, use) => {
     const client = new EmailClient();
     await use(client);
-    //await client.cleanupInboxes();
+    await client.cleanupInboxes();
   },
 });

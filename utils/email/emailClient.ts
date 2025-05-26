@@ -48,8 +48,12 @@ export class EmailClient {
       try {
         await this.mailslurp.deleteInbox(inbox.id);
         logger.message(`Deleted inbox: ${inbox.emailAddress}`, 'success');
-      } catch (err: any) {
-        logger.message(`Failed to delete inbox: ${inbox.emailAddress}. Error: ${err}`, 'error');
+      } catch (err: unknown) {
+        const errorMessage = err instanceof Error ? err.message : String(err);
+        logger.message(
+          `Failed to delete inbox: ${inbox.emailAddress}. Error: ${errorMessage}`,
+          'error',
+        );
       }
     }
     this.createdInboxes = [];
