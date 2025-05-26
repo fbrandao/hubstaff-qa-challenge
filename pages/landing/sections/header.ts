@@ -26,6 +26,7 @@ export class Header extends BaseComponent {
     return [
       {
         description: 'Hero form email input is visible',
+        type: 'assertion',
         assertion: () => expect(this.page.getByTestId('home_enter_email')).toBeVisible(),
       },
     ];

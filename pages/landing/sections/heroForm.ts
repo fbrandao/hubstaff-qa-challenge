@@ -16,10 +16,12 @@ export class HeroForm extends BaseComponent {
     return [
       {
         description: 'Email input is visible',
+        type: 'assertion',
         assertion: () => expect(this.page.getByTestId('home_enter_email')).toBeVisible(),
       },
       {
         description: 'Create Account button is visible',
+        type: 'assertion',
         assertion: () => expect(this.page.getByTestId('create_account')).toBeVisible(),
       },
     ];

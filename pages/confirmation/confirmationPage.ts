@@ -21,14 +21,17 @@ export class ConfirmationPage extends BasePage {
     return [
       {
         description: 'Confirmation title is visible',
+        type: 'assertion',
         assertion: () => expect(this.title).toBeVisible(),
       },
       {
         description: 'Resend button is visible',
+        type: 'assertion',
         assertion: () => expect(this.resendButton).toBeVisible(),
       },
       {
         description: 'Back to sign in link is visible',
+        type: 'assertion',
         assertion: () => expect(this.backToSignInLink).toBeVisible(),
       },
     ];

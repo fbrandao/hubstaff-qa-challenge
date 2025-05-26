@@ -19,12 +19,20 @@ export abstract class BasePage {
   }
 
   async waitUntilReady(): Promise<void> {
-    for (const check of this.getReadinessChecks()) {
-      if ('check' in check) {
-        const passed = await check.check();
-        expect(passed, `Page readiness check failed: ${check.description}`).toBeTruthy();
-      } else {
-        await check.assertion();
+    const checks = this.getReadinessChecks();
+
+    for (const check of checks) {
+      const { description } = check;
+
+      try {
+        if (check.type === 'check') {
+          const passed = await check.check();
+          expect(passed, `Readiness check failed: ${description}`).toBeTruthy();
+        } else {
+          await check.assertion();
+        }
+      } catch (err) {
+        throw new Error(`Readiness check failed: ${description}\n${(err as Error).message}`);
       }
     }
   }

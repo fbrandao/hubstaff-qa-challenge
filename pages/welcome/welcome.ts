@@ -1,4 +1,4 @@
-import { Locator, Page } from '@playwright/test';
+import { Locator, Page, expect } from '@playwright/test';
 import { BasePage } from '../base/basePage';
 import { ReadinessCheck } from '../base/types';
 
@@ -21,7 +21,28 @@ export class WelcomePage extends BasePage {
     this.requestAccessButton = this.page.getByRole('link', { name: 'Request access to join' });
   }
 
-  protected getReadinessChecks(): ReadinessCheck[] {
-    return [];
+  getReadinessChecks(): ReadinessCheck[] {
+    return [
+      {
+        description: 'Welcome title should be visible',
+        type: 'assertion',
+        assertion: () => expect(this.title).toBeVisible(),
+      },
+      {
+        description: 'Description test is visible',
+        type: 'assertion',
+        assertion: () => expect(this.descriptionText).toBeVisible(),
+      },
+      {
+        description: 'Email mention',
+        type: 'assertion',
+        assertion: () => expect(this.emailMention).toBeVisible(),
+      },
+      {
+        description: 'Create organization button is visible',
+        type: 'assertion',
+        assertion: () => expect(this.createOrganizationButton).toBeVisible(),
+      },
+    ];
   }
 }

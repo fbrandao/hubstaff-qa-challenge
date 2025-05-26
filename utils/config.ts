@@ -7,11 +7,11 @@ export const config = {
   },
   api: {
     marketing: {
-      base: getEnvVar('MARKETING_API_BASE'),
+      baseUrl: getEnvVar('MARKETING_API_BASE'),
       sessionEndpoint: '/api/session',
     },
     account: {
-      base: getEnvVar('ACCOUNT_API_BASE'),
+      baseUrl: getEnvVar('ACCOUNT_API_BASE'),
       loginEndpoint: '/login',
     },
   },
@@ -36,7 +36,10 @@ export const buildUrl = (base: string | undefined, path: string): string => {
 export const BASE_URL = config.app.baseUrl!;
 
 export const MARKETING_API_URL = buildUrl(
-  config.api.marketing.base,
+  config.api.marketing.baseUrl,
   config.api.marketing.sessionEndpoint,
 );
-export const ACCOUNT_API_URL = buildUrl(config.api.account.base, config.api.account.loginEndpoint);
+export const ACCOUNT_API_URL = buildUrl(
+  config.api.account.baseUrl,
+  config.api.account.loginEndpoint,
+);

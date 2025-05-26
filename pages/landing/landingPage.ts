@@ -39,4 +39,8 @@ export class LandingPage extends BasePage {
     await this.goto();
     await this.waitUntilReady();
   }
+
+  async clickSignInBtn() {
+    await this.header.signInButton.click();
+  }
 }

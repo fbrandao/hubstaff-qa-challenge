@@ -26,18 +26,22 @@ export class SignUpForm extends BaseComponent {
     return [
       {
         description: 'Signup heading is visible',
+        type: 'assertion',
         assertion: () => expect(this.heading).toBeVisible(),
       },
       {
         description: 'First name input is visible',
+        type: 'assertion',
         assertion: () => expect(this.firstNameInput).toBeVisible(),
       },
       {
         description: 'Email input is visible',
+        type: 'assertion',
         assertion: () => expect(this.emailInput).toBeVisible(),
       },
       {
         description: 'Create account button is visible',
+        type: 'assertion',
         assertion: () => expect(this.createAccountButton).toBeVisible(),
       },
     ];

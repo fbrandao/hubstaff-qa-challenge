@@ -1,12 +1,19 @@
 import { test, expect } from '../../fixtures';
-import { faker } from '@faker-js/faker';
 import { setCookieConsent } from '../../utils/cookies/cookieConsent';
 import { extractConfirmationLink } from '../../utils/email/emailExtractor';
 
+let inboxId: string;
+
 test.describe('Authentication', () => {
-  test.beforeEach(async ({ landingPage, signUpPage }) => {
+  test.beforeEach(async ({ landingPage, signUpPage, emailClient, testUser }) => {
     await setCookieConsent(landingPage.context);
     await setCookieConsent(signUpPage.context);
+
+    const inbox = await emailClient.createInbox({ prefix: 'e2e-automation' });
+    testUser.email = inbox.emailAddress;
+    inboxId = inbox.id;
+
+    await landingPage.open();
   });
 
   test('User can sign up for a 14-day trial and confirm email', async ({
@@ -16,41 +23,26 @@ test.describe('Authentication', () => {
     welcomePage,
     emailClient,
     page,
+    testUser,
   }) => {
-    const testData = {
-      firstName: faker.person.firstName(),
-      lastName: faker.person.lastName(),
-      password: faker.internet.password({ length: 10 }),
-    };
-
-    const inbox = await test.step('Create test email inbox', async () => {
-      const inbox = await emailClient.createInbox({ prefix: 'signup-test' });
-      return inbox;
-    });
-
     await test.step('Navigate to signup page', async () => {
-      await landingPage.open();
       await landingPage.header.clickFreeTrial();
-      await signUpPage.waitUntilReady();
+      await expect(signUpPage).toBeReady();
     });
 
     await test.step('Fill signup form and submit', async () => {
-      await signUpPage.signUpForm.fillForm({
-        firstName: testData.firstName,
-        lastName: testData.lastName,
-        email: inbox.emailAddress,
-        password: testData.password,
-      });
+      await signUpPage.signUpForm.fillForm(testUser);
       await signUpPage.signUpForm.submit();
-      await expect(confirmationPage.title).toBeVisible();
-      await expect(confirmationPage.subtitle).toContainText(inbox.emailAddress);
+
+      await expect(confirmationPage).toBeReady();
+      await expect(confirmationPage.subtitle).toContainText(testUser.email);
     });
 
     const emailContent = await test.step('Wait for confirmation email', async () => {
-      const email = await emailClient.waitForLatestEmail(inbox.id, 10000);
+      const email = await emailClient.waitForLatestEmail(inboxId, 10000);
       expect(email).toBeTruthy();
       expect(email.body).toContain('Confirm account');
-      expect(email.body).toContain(testData.firstName);
+      expect(email.body).toContain(testUser.firstName);
       return email;
     });
 
@@ -66,6 +58,42 @@ test.describe('Authentication', () => {
       await expect(welcomePage.createOrganizationButton).toBeVisible();
       await expect(welcomePage.tryDifferentEmailButton).toBeVisible();
       await expect(welcomePage.requestAccessButton).toBeVisible();
+    });
+  });
+
+  test('User can sign in with a verified account', async ({
+    emailClient,
+    marketingApi,
+    accountApi,
+    testUser,
+    landingPage,
+    signInPage,
+    welcomePage,
+  }) => {
+    await test.step('Sign up user via API', async () => {
+      const response = await marketingApi.signUp(testUser);
+      expect(response.status).toBeGreaterThanOrEqual(200);
+    });
+
+    await test.step('Confirm user email via API', async () => {
+      await accountApi.confirmAccountFromEmail({
+        emailClient,
+        inboxId,
+        timeout: 10000,
+      });
+    });
+
+    await test.step('Navigate to Login Page', async () => {
+      await landingPage.clickSignInBtn();
+      await expect(signInPage).toBeReady();
+    });
+
+    await test.step('Fill and submit login form', async () => {
+      await signInPage.login(testUser.email, testUser.password);
+    });
+
+    await test.step('Verify welcome screen', async () => {
+      await expect(welcomePage).toBeReady();
     });
   });
 });

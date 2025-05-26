@@ -3,9 +3,11 @@ import { LandingPage } from '../pages/landing/landingPage';
 import { SignUpPage } from '../pages/signup/signUpPage';
 import { WelcomePage } from '../pages/welcome/welcome';
 import { ConfirmationPage } from '../pages/confirmation/confirmationPage';
+import { SignInPage } from '../pages/signin/signInPage';
 
 type PageFixtures = {
   landingPage: LandingPage;
+  signInPage: SignInPage;
   signUpPage: SignUpPage;
   welcomePage: WelcomePage;
   confirmationPage: ConfirmationPage;
@@ -14,6 +16,11 @@ type PageFixtures = {
 export const test = base.extend<PageFixtures>({
   landingPage: async ({ page }: { page: Page }, use: (page: LandingPage) => Promise<void>) => {
     const pageObj = new LandingPage(page);
+    await use(pageObj);
+  },
+
+  signInPage: async ({ page }: { page: Page }, use: (page: SignInPage) => Promise<void>) => {
+    const pageObj = new SignInPage(page);
     await use(pageObj);
   },
 

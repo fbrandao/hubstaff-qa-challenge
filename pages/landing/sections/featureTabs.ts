@@ -44,6 +44,7 @@ export class FeatureTabs extends BaseComponent {
     return [
       {
         description: 'First feature tab is visible',
+        type: 'assertion',
         assertion: () =>
           expect(this.page.getByRole('tab', { name: /Global time tracking/i })).toBeVisible(),
       },
