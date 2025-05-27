@@ -4,6 +4,8 @@ export const config = {
   app: {
     name: 'Hubstaff QA Challenge',
     baseUrl: getEnvVar('BASE_URL'),
+    appBaseUrl: getEnvVar('APP_BASE_URL'),
+    marketingBaseUrl: getEnvVar('MARKETING_BASE_URL'),
   },
   api: {
     marketing: {
@@ -20,26 +22,29 @@ export const config = {
   },
 };
 
-export const buildUrl = (base: string | undefined, path: string): string => {
-  if (base === undefined) {
-    throw new TypeError('Base URL argument cannot be undefined. Check your config.');
-  }
+export type BaseUrlType = 'marketing' | 'app';
+
+export function getBaseUrl(type: BaseUrlType = 'marketing'): string {
+  if (type === 'app') return config.app.appBaseUrl!;
+  return config.app.marketingBaseUrl!;
+}
+
+export function buildUrl(base: string, path: string): string {
+  if (!base) throw new TypeError('Base URL argument cannot be undefined. Check your config.');
   if (typeof base !== 'string' || typeof path !== 'string') {
     throw new TypeError('Both base and path arguments must be strings.');
   }
-
-  const normalizedBase = base.replace(/\/+$/, ''); // Remove trailing slashes
-  const normalizedPath = path.replace(/^\/+/, ''); // Remove leading slashes
-
+  const normalizedBase = base.replace(/\/+$/, '');
+  const normalizedPath = path.replace(/^\/+/, '');
   return `${normalizedBase}/${normalizedPath}`;
-};
+}
 export const BASE_URL = config.app.baseUrl!;
 
 export const MARKETING_API_URL = buildUrl(
-  config.api.marketing.baseUrl,
+  config.api.marketing.baseUrl!,
   config.api.marketing.sessionEndpoint,
 );
 export const ACCOUNT_API_URL = buildUrl(
-  config.api.account.baseUrl,
+  config.api.account.baseUrl!,
   config.api.account.loginEndpoint,
 );

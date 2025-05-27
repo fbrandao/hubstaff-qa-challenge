@@ -1,17 +1,15 @@
 import dotenv from 'dotenv';
-import { config } from './utils/config';
 import path from 'path';
 import { request } from '@playwright/test';
 import { logger } from './utils/logger';
 import { healthChecks, runHealthChecks } from './utils/healthCheck';
 import { ACCOUNT_API_URL, BASE_URL, MARKETING_API_URL } from './utils/config';
 import { isCI } from './utils/env';
+import { createStorageStates } from './utils/auth/sessionManager';
 
 if (!isCI) {
   dotenv.config({ path: path.resolve(process.cwd(), '.env') });
 }
-
-logger.message(`MAILSLURP_API_KEY: ${config.mailSlurp.apiKey}`, 'info');
 
 async function globalSetup() {
   const apiRequest = await request.newContext();
@@ -40,6 +38,8 @@ async function globalSetup() {
       'Required services are not available. Please check the logs above for details.',
     );
   }
+  logger.message('Logging in and saving session state...');
+  await createStorageStates();
 }
 
 export default globalSetup;

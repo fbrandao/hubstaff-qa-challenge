@@ -22,14 +22,17 @@ export class LandingPage extends BasePage {
     return [
       {
         description: 'Header is ready',
+        type: 'assertion',
         assertion: () => this.header.waitUntilReady(),
       },
       {
         description: 'Hero form is ready',
+        type: 'assertion',
         assertion: () => this.heroForm.waitUntilReady(),
       },
       {
         description: 'Feature tabs are ready',
+        type: 'assertion',
         assertion: () => this.featureTabs.waitUntilReady(),
       },
     ];

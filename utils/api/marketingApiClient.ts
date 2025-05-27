@@ -1,18 +1,7 @@
 import { BaseApiClient } from './baseApiClient';
-import { logger } from '../logger';
 import { config } from '../config';
 import { AxiosResponse } from 'axios';
-
-interface SignupPayload {
-  firstName: string;
-  lastName: string;
-  email: string;
-  password: string;
-  timeZone?: string;
-  product?: string;
-  customAnonymousId?: string;
-}
-
+import { SignupPayload } from './types';
 export class MarketingApiClient extends BaseApiClient {
   protected sessionEndpoint = config.api.marketing.sessionEndpoint;
 
@@ -21,6 +10,16 @@ export class MarketingApiClient extends BaseApiClient {
       throw new Error('MARKETING_API_BASE is not configured in the environment.');
     }
     super(config.api.marketing.baseUrl);
+  }
+
+  protected async fetchCsrfToken(): Promise<string> {
+    if (this.csrfToken) return this.csrfToken;
+
+    const response = await this.api.get(this.sessionEndpoint);
+    const token = response.data?.csrf?.token;
+    if (!token) throw new Error('CSRF token not found in session data');
+    this.csrfToken = token;
+    return token;
   }
 
   async signUp(payload: SignupPayload): Promise<AxiosResponse> {
@@ -37,8 +36,6 @@ export class MarketingApiClient extends BaseApiClient {
     if (payload.timeZone) formData.append('user[time_zone]', payload.timeZone);
     if (payload.customAnonymousId)
       formData.append('hubstaff[custom_anonymous_id]', payload.customAnonymousId);
-
-    logger.message(`📨 Signing up ${payload.email}`, 'info');
 
     return this.request('/signup', {
       method: 'POST',

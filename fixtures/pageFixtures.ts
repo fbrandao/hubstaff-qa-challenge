@@ -4,6 +4,7 @@ import { SignUpPage } from '../pages/signup/signUpPage';
 import { WelcomePage } from '../pages/welcome/welcome';
 import { ConfirmationPage } from '../pages/confirmation/confirmationPage';
 import { SignInPage } from '../pages/signin/signInPage';
+import { ProjectsPage } from '../pages/projects/projectsPage';
 
 type PageFixtures = {
   landingPage: LandingPage;
@@ -11,6 +12,7 @@ type PageFixtures = {
   signUpPage: SignUpPage;
   welcomePage: WelcomePage;
   confirmationPage: ConfirmationPage;
+  projectsPage: ProjectsPage;
 };
 
 export const test = base.extend<PageFixtures>({
@@ -39,6 +41,11 @@ export const test = base.extend<PageFixtures>({
 
   welcomePage: async ({ page }: { page: Page }, use: (page: WelcomePage) => Promise<void>) => {
     const pageObj = new WelcomePage(page);
+    await use(pageObj);
+  },
+
+  projectsPage: async ({ page }: { page: Page }, use: (page: ProjectsPage) => Promise<void>) => {
+    const pageObj = new ProjectsPage(page);
     await use(pageObj);
   },
 });

@@ -4,7 +4,7 @@ import { extractConfirmationLink } from '../../utils/email/emailExtractor';
 
 let inboxId: string;
 
-test.describe('Authentication', () => {
+test.describe('Authentication Scenarios', () => {
   test.beforeEach(async ({ landingPage, signUpPage, emailClient, testUser }) => {
     await setCookieConsent(landingPage.context);
     await setCookieConsent(signUpPage.context);
