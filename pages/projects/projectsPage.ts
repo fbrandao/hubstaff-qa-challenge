@@ -58,8 +58,8 @@ export class ProjectsPage extends BasePage {
     });
   }
 
-  async createProject(name: string) {    
-    await this.newProjectModal.fillForm(name);   
+  async createProject(name: string) {
+    await this.newProjectModal.fillForm(name);
     await this.newProjectModal.save();
   }
 }

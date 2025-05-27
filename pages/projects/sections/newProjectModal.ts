@@ -5,7 +5,9 @@ import { ReadinessCheck } from '../../base/types';
 export class NewProjectModal extends BaseComponent {
   readonly modal: Locator = this.page.locator('.modal-content').filter({ hasText: 'New project' });
   readonly title: Locator = this.modal.locator('h4.modal-title:has-text("New project")');
-  readonly projectNamesTextarea: Locator = this.modal.getByRole('textbox', { name: 'Add project names separated' });
+  readonly projectNamesTextarea: Locator = this.modal.getByRole('textbox', {
+    name: 'Add project names separated',
+  });
   readonly saveButton: Locator = this.modal.locator('button.btn-primary:has-text("Save")');
   readonly cancelButton: Locator = this.modal.locator('button.btn-default:has-text("Cancel")');
   readonly tabGeneral: Locator = this.modal.locator('#tab-general');
@@ -50,6 +52,4 @@ export class NewProjectModal extends BaseComponent {
   async expectVisible() {
     await expect(this.modal).toBeVisible();
   }
-
-
 }
