@@ -13,6 +13,7 @@ type PageFixtures = {
   welcomePage: WelcomePage;
   confirmationPage: ConfirmationPage;
   projectsPage: ProjectsPage;
+  projectsCleanup: () => Promise<void>;
 };
 
 export const test = base.extend<PageFixtures>({

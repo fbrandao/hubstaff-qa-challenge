@@ -5,6 +5,11 @@ import { buildUrl, BaseUrlType, getBaseUrl } from '../../utils/config';
 
 type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 
+interface ApiRequest {
+  method: HttpMethod;
+  url: string | RegExp;
+}
+
 export abstract class BasePage {
   constructor(
     protected readonly page: Page,
@@ -26,6 +31,7 @@ export abstract class BasePage {
     const fullUrl = buildUrl(base, this.url);
     await this.page.goto(fullUrl);
   }
+
   async waitUntilReady(): Promise<void> {
     await test.step('Wait until page is ready', async () => {
       const checks = this.getReadinessChecks();
@@ -49,21 +55,23 @@ export abstract class BasePage {
 
   async waitForApiResponseWithAction(options: {
     page: Page;
-    method: HttpMethod;
-    url: string | RegExp;
+    requests: ApiRequest[];
     action: () => Promise<void>;
-  }): Promise<Response> {
-    const { page, method, url, action } = options;
+  }): Promise<Response[]> {
+    const { page, requests, action } = options;
 
-    const [response] = await Promise.all([
+    const responsePromises = requests.map(request =>
       page.waitForResponse(resp => {
         const matchesUrl =
-          typeof url === 'string' ? resp.url().includes(url) : url.test(resp.url());
-        return matchesUrl && resp.request().method().toUpperCase() === method.toUpperCase();
+          typeof request.url === 'string'
+            ? resp.url().includes(request.url)
+            : request.url.test(resp.url());
+        return matchesUrl && resp.request().method().toUpperCase() === request.method.toUpperCase();
       }),
-      action(),
-    ]);
+    );
 
-    return response;
+    const [responses] = await Promise.all([Promise.all(responsePromises), action()]);
+
+    return responses;
   }
 }

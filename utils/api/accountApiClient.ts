@@ -6,7 +6,7 @@ import { AxiosResponse } from 'axios';
 import { request } from '@playwright/test';
 import fs from 'fs';
 import path from 'path';
-import { LoginPayload, LoginAndSaveStorageStatePayload } from './types';
+import { LoginAndSaveStorageStatePayload } from './types';
 
 export class AccountApiClient extends BaseApiClient {
   constructor() {
@@ -38,28 +38,6 @@ export class AccountApiClient extends BaseApiClient {
 
     this.csrfToken = token;
     return token;
-  }
-
-  async login(opts: LoginPayload): Promise<void> {
-    const domain = opts.domain ?? 'account.hubstaff.com';
-
-    const form = new URLSearchParams({
-      'user[email]': opts.email,
-      'user[password]': opts.password,
-      fingerprint: 'dummy',
-      button: '',
-    });
-
-    await this.request('/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      data: form.toString(),
-      maxRedirects: 0,
-      validateStatus: s => s < 400,
-    });
-
-    const cookies = await this.getCookies(domain);
-    await this.injectCookiesIntoContext(cookies, opts.context, domain);
   }
 
   /**
