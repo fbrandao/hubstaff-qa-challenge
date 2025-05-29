@@ -23,15 +23,15 @@ export default defineConfig({
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: isCI
     ? [
-        ['html', { outputFolder: `../reports/e2e` }],
+        ['html', { outputFolder: `./reports/e2e` }],
         ['line'],
-        ['junit', { outputFile: `../reports/e2e/results.xml` }],
-        ['json', { outputFile: `../reports/e2e/results.json` }],
+        ['junit', { outputFile: `./reports/e2e/results.xml` }],
+        ['json', { outputFile: `./reports/e2e/results.json` }],
         ['github'],
         [
           'playwright-ctrf-json-reporter',
           {
-            outputFile: `../reports/e2e/ctrf.json`,
+            outputFile: `./reports/e2e/ctrf.json`,
             appName: config.app.name,
             appVersion: '1.0.0',
             osPlatform: os.platform(),
@@ -43,7 +43,7 @@ export default defineConfig({
           },
         ],
       ]
-    : [['html', { outputFolder: `../reports/e2e` }], ['line']],
+    : [['html', { outputFolder: `./reports/e2e` }], ['line']],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
