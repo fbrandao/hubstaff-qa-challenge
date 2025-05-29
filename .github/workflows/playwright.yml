@@ -75,6 +75,14 @@ jobs:
 
       - name: Run Playwright Tests
         run: npm run test
+        env:
+          BASE_URL: ${{ vars.BASE_URL }}
+          MARKETING_BASE_URL: ${{ vars.MARKETING_BASE_URL }}
+          MARKETING_API_BASE: ${{ vars.MARKETING_API_BASE }}
+          ACCOUNT_API_BASE: ${{ vars.ACCOUNT_API_BASE }}
+          APP_BASE_URL: ${{ vars.APP_BASE_URL }}
+          MAILSLURP_API_KEY: ${{ secrets.MAILSLURP_API_KEY }}
+          CI: true
 
       - name: Upload Test Report (if exists)
         if: always()
