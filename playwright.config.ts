@@ -9,6 +9,9 @@ export default defineConfig({
   /* The global test directory */
   testDir: './tests/e2e/',
   timeout: 60000,
+  expect: {
+    timeout: 10000,
+  },
 
   /* Run tests in files in parallel */
   fullyParallel: true,
