@@ -37,9 +37,9 @@ export default defineConfig({
             osPlatform: os.platform(),
             osRelease: os.release(),
             osVersion: os.version(),
-            buildName: 'Tic-Tac-Toe Build',
+            buildName: 'Hubstaff E2E Build',
             buildNumber: '100',
-            testEnvironment: 'staging',
+            testEnvironment: 'production',
           },
         ],
       ]
@@ -62,24 +62,6 @@ export default defineConfig({
     {
       name: 'E2E - Chrome',
       use: { ...devices['Desktop Chrome'], channel: 'chromium' },
-    },
-    {
-      name: 'E2E - Firefox',
-      use: { ...devices['Desktop Firefox'] },
-    },
-    {
-      name: 'E2E - Safari',
-      use: { ...devices['Desktop Safari'] },
-    },
-
-    /* 🔹 E2E TESTS (Mobile Browsers) */
-    {
-      name: 'E2E - Mobile Chrome',
-      use: { ...devices['Pixel 7'] },
-    },
-    {
-      name: 'E2E - Mobile Safari',
-      use: { ...devices['iPhone 15'] },
     },
   ],
 });
