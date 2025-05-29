@@ -29,7 +29,7 @@ export abstract class BasePage {
   async goto() {
     const base = getBaseUrl(this.baseUrlType);
     const fullUrl = buildUrl(base, this.url);
-    await this.page.goto(fullUrl);
+    await this.page.goto(fullUrl, { waitUntil: 'domcontentloaded' });
   }
 
   async waitUntilReady(): Promise<void> {

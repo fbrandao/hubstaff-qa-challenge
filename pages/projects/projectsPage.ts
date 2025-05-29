@@ -13,7 +13,7 @@ export class ProjectsPage extends BasePage {
   }
 
   readonly addProjectButton = this.page.getByText('Add project');
-  readonly heading = this.page.getByRole('heading', { name: 'Projects' });
+  readonly heading = this.page.getByRole('heading', { name: 'Projects', exact: true });
   readonly newProjectModal = new NewProjectModal(this.page);
   readonly deleteProjectModal = new DeleteProjectModal(this.page);
   readonly projectNameElements = this.page.locator('.project-name');
