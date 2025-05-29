@@ -35,7 +35,7 @@ export default defineConfig({
         [
           'playwright-ctrf-json-reporter',
           {
-            outputFile: 'ctrf/reports/e2e/ctrf.json',
+            outputFile: 'reports/e2e/ctrf.json',
             appName: config.app.name,
             appVersion: '1.0.0',
             osPlatform: os.platform(),
