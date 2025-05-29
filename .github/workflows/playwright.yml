@@ -84,8 +84,10 @@ jobs:
           MAILSLURP_API_KEY: ${{ secrets.MAILSLURP_API_KEY }}
           CI: true
       - name: List all files and folders (root)
+        if: always()
         run: ls -lR
       - name: List reports/e2e directory
+        if: always()
         run: ls -l reports/e2e
 
       - name: Upload Test Report (if exists)
