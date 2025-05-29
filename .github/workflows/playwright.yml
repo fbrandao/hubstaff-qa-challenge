@@ -83,6 +83,10 @@ jobs:
           APP_BASE_URL: ${{ vars.APP_BASE_URL }}
           MAILSLURP_API_KEY: ${{ secrets.MAILSLURP_API_KEY }}
           CI: true
+      - name: List all files and folders (root)
+        run: ls -lR
+      - name: List reports/e2e directory
+        run: ls -l reports/e2e
 
       - name: Upload Test Report (if exists)
         if: always()

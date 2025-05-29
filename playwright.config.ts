@@ -50,7 +50,7 @@ export default defineConfig({
     baseURL: config.app.baseUrl,
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
-    trace: 'on-first-retry',
+    trace: 'on',
   },
   /* Global setup and teardown */
   globalSetup: './global-setup.ts',
