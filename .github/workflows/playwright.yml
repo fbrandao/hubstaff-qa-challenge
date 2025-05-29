@@ -103,7 +103,7 @@ jobs:
         if: always()
         uses: ctrf-io/github-test-reporter@v1
         with:
-          report-path: reports/e2e/ctrf.json
+          report-path: ctrf/reports/e2e/ctrf.json
 
   notify-on-failure:
     name: Notify on Failure

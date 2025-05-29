@@ -11,11 +11,9 @@ export class EmailClient {
       throw new Error('❌ MAILSLURP_API_KEY is missing.');
     }
     this.mailslurp = new MailSlurp({ apiKey: config.mailSlurp.apiKey });
-    logger.message(`[EMAIL] Email client initialized`);
   }
 
   async waitForLatestEmail(inboxId: string, timeout = 30_000) {
-    logger.message(`[EMAIL] Waiting for latest email in inbox: ${inboxId}`);
     return this.mailslurp.waitForLatestEmail(inboxId, timeout);
   }
 
@@ -36,7 +34,6 @@ export class EmailClient {
     };
     const inbox = await this.mailslurp.createInboxWithOptions(enhancedOptions);
     this.createdInboxes.push(inbox);
-    logger.message(`[EMAIL] Created inbox: ${inbox.emailAddress}`);
     return inbox;
   }
 
