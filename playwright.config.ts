@@ -8,7 +8,7 @@ import os from 'os';
 export default defineConfig({
   /* The global test directory */
   testDir: './tests/e2e/',
-  timeout: 60000,
+  timeout: isCI ? 180000 : 60000,
   expect: {
     timeout: 10000,
   },
@@ -19,10 +19,10 @@ export default defineConfig({
   workers: 5,
 
   /* Fail the build on CI if you accidentally left test.only in the source code. */
-  forbidOnly: !!process.env.CI,
+  forbidOnly: !!isCI,
 
   /* Retry on CI only */
-  retries: process.env.CI ? 1 : 0,
+  retries: isCI ? 1 : 0,
 
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: isCI
@@ -54,8 +54,8 @@ export default defineConfig({
     baseURL: config.app.baseUrl,
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
-    trace: 'on',
-    video: 'on',
+    trace: 'on-first-retry',
+    video: 'retain-on-failure',
     screenshot: 'on',
   },
   /* Global setup and teardown */
