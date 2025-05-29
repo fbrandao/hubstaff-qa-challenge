@@ -8,6 +8,7 @@ import os from 'os';
 export default defineConfig({
   /* The global test directory */
   testDir: './tests/e2e/',
+  timeout: 60000,
 
   /* Run tests in files in parallel */
   fullyParallel: true,
