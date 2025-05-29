@@ -52,7 +52,7 @@ test.describe('Authentication Scenarios', () => {
     });
 
     await test.step('Follow confirmation link and verify activation', async () => {
-      await page.goto(confirmationLink);
+      await page.goto(confirmationLink, { waitUntil: 'domcontentloaded' });
       await expect(welcomePage.title).toBeVisible();
       await expect(welcomePage.createOrganizationButton).toBeVisible();
       await expect(welcomePage.tryDifferentEmailButton).toBeVisible();
