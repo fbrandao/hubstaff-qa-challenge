@@ -1,6 +1,7 @@
 import { test, expect } from '../../fixtures';
 import { setCookieConsent } from '../../utils/cookies/cookieConsent';
 import { extractConfirmationLink } from '../../utils/email/emailExtractor';
+import { logger } from '../../utils/logger';
 
 let inboxId: string;
 
@@ -12,6 +13,8 @@ test.describe('Authentication Scenarios', () => {
     const inbox = await emailClient.createInbox({ prefix: 'e2e-automation' });
     testUser.email = inbox.emailAddress;
     inboxId = inbox.id;
+    logger.message(`[TEST] Creating inbox for ${testUser}`);
+    logger.message(`[TEST] Created inbox: ${inboxId} for ${testUser.email}`);
 
     await landingPage.open();
   });
@@ -39,6 +42,7 @@ test.describe('Authentication Scenarios', () => {
     });
 
     const emailContent = await test.step('Wait for confirmation email', async () => {
+      logger.message(`[TEST] Waiting for email in inbox: ${inboxId}`);
       const email = await emailClient.waitForLatestEmail(inboxId, 10000);
       expect(email).toBeTruthy();
       expect(email.body).toContain('Confirm account');
