@@ -1,7 +1,9 @@
 import { Page, expect } from '@playwright/test';
 import { BasePage } from '../base/basePage';
 import { ReadinessCheck } from '../base/types';
-import { NewProjectModal } from './sections/newProjectModal';
+import { NewProjectModal } from './components/newProjectModal';
+import { DeleteProjectModal } from './components/deleteProjectModal';
+import { faker } from '@faker-js/faker';
 
 export class ProjectsPage extends BasePage {
   protected url = '/projects';
@@ -13,6 +15,7 @@ export class ProjectsPage extends BasePage {
   readonly addProjectButton = this.page.getByText('Add project');
   readonly heading = this.page.getByRole('heading', { name: 'Projects' });
   readonly newProjectModal = new NewProjectModal(this.page);
+  readonly deleteProjectModal = new DeleteProjectModal(this.page);
   readonly projectNameElements = this.page.locator('.project-name');
   readonly toastMessage = this.page.locator('.jGrowl-message');
 
@@ -83,8 +86,8 @@ export class ProjectsPage extends BasePage {
   }
 
   /** Generates a unique project name based on the provided base name */
-  async generateUniqueProjectName(baseName = 'E2E Project'): Promise<string> {
-    const trimmedBase = baseName.trim().slice(0, 100);
+  async generateUniqueProjectName(baseName?: string): Promise<string> {
+    const trimmedBase = (baseName || faker.company.name()).trim().slice(0, 100);
     if (!trimmedBase) {
       throw new Error('Base name cannot be empty or whitespace only');
     }
@@ -106,44 +109,41 @@ export class ProjectsPage extends BasePage {
   /** Deletes a project with the given name */
   async deleteProject(name: string) {
     // Find the project row using the table structure and exact name match
-    const projectRow = this.page.locator('table.table tbody tr', {
-      has: this.page.locator(`.project-name:text-is("${name}")`)
-    }).first();
-    
+    const projectRow = this.page
+      .locator('table.table tbody tr', {
+        has: this.page.locator(`.project-name:text-is("${name}")`),
+      })
+      .first();
+
     // Click the actions dropdown in this specific row
     await projectRow.locator('.table-actions-dropdown .dropdown-toggle').click();
-    
+
     // Click the delete option in the teleported dropdown menu and wait for the delete dialog
     await this.waitForApiResponseWithAction({
       page: this.page,
       requests: [{ method: 'GET', url: /\/projects\/\d+\/delete_dialog\.dialog/ }],
-      action: () => this.page.locator('#teleport-target').getByRole('link', { name: 'Delete project' }).click()
+      action: () =>
+        this.page.locator('#teleport-target').getByRole('link', { name: 'Delete project' }).click(),
     });
-    
-    // Wait for the modal to be visible
-    const modal = this.page.locator('#delete-project-modal');
-    await expect(modal).toBeVisible();
-    
-    // Check the "I understand" checkbox
-    await this.page.locator('#delete-project-modal').getByText('I understand and wish to').click();
-    
-    // Click the delete button in the modal
+
+    await expect(this.deleteProjectModal).toBeReady();
+
     await this.waitForApiResponseWithAction({
       page: this.page,
       requests: [
         { method: 'POST', url: /\/projects\/\d+$/ },
-        { method: 'GET', url: /\/organizations\/\d+\/projects/ }
+        { method: 'GET', url: /\/organizations\/\d+\/projects/ },
       ],
-      action: () => this.page.locator('#delete-button').click()
+      action: () => this.deleteProjectModal.confirmDelete(),
     });
   }
 
   /** Cleans up test projects by deleting any that match the test pattern */
-  async cleanupTestProjects() {    
+  async cleanupTestProjects() {
     const projectNames = await this.getProjectNames();
-    
+
     if (projectNames.length > 0) {
-      for (const name of projectNames) {      
+      for (const name of projectNames) {
         await this.deleteProject(name);
       }
     }

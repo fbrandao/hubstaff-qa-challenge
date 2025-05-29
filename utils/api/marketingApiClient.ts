@@ -15,7 +15,7 @@ export class MarketingApiClient extends BaseApiClient {
   protected async fetchCsrfToken(): Promise<string> {
     if (this.csrfToken) return this.csrfToken;
 
-    const response = await this.api.get(this.sessionEndpoint);
+    const response = await this.request(this.sessionEndpoint, { method: 'GET' });
     const token = response.data?.csrf?.token;
     if (!token) throw new Error('CSRF token not found in session data');
     this.csrfToken = token;

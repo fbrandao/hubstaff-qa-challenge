@@ -5,6 +5,8 @@ import { WelcomePage } from '../pages/welcome/welcome';
 import { ConfirmationPage } from '../pages/confirmation/confirmationPage';
 import { SignInPage } from '../pages/signin/signInPage';
 import { ProjectsPage } from '../pages/projects/projectsPage';
+import { CreatePaymentsPage } from '../pages/financials/teamPayments/createPaymentsPage';
+import { PaymentSummaryPage } from '../pages/financials/teamPayments/paymentSummaryPage';
 
 type PageFixtures = {
   landingPage: LandingPage;
@@ -13,7 +15,8 @@ type PageFixtures = {
   welcomePage: WelcomePage;
   confirmationPage: ConfirmationPage;
   projectsPage: ProjectsPage;
-  projectsCleanup: () => Promise<void>;
+  createPaymentsPage: CreatePaymentsPage;
+  paymentSummaryPage: PaymentSummaryPage;
 };
 
 export const test = base.extend<PageFixtures>({
@@ -47,6 +50,22 @@ export const test = base.extend<PageFixtures>({
 
   projectsPage: async ({ page }: { page: Page }, use: (page: ProjectsPage) => Promise<void>) => {
     const pageObj = new ProjectsPage(page);
+    await use(pageObj);
+  },
+
+  createPaymentsPage: async (
+    { page }: { page: Page },
+    use: (page: CreatePaymentsPage) => Promise<void>,
+  ) => {
+    const pageObj = new CreatePaymentsPage(page);
+    await use(pageObj);
+  },
+
+  paymentSummaryPage: async (
+    { page }: { page: Page },
+    use: (page: PaymentSummaryPage) => Promise<void>,
+  ) => {
+    const pageObj = new PaymentSummaryPage(page);
     await use(pageObj);
   },
 });
