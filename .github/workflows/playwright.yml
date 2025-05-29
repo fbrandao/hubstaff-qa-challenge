@@ -72,7 +72,8 @@ jobs:
         with:
           path: node_modules
           key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
-
+      - name: Ensure ctrf report folder exists
+        run: mkdir -p ctrf/reports/e2e
       - name: Run Playwright Tests
         run: npm run test
         env:
