@@ -69,5 +69,13 @@ export default defineConfig({
       name: 'E2E - Chrome',
       use: { ...devices['Desktop Chrome'], channel: 'chromium' },
     },
+    {
+      name: 'E2E - Firefox',
+      use: { ...devices['Desktop Firefox'], channel: 'firefox' },
+    },
+    {
+      name: 'E2E - Safari',
+      use: { ...devices['Desktop Safari'], channel: 'webkit' },
+    },
   ],
 });

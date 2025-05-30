@@ -235,10 +235,18 @@ docker run --env-file .env -e BROWSER=Chrome hubstaff-qa
 
 Includes GitHub Actions config with:
 
-- ✅ Parallel browser tests
+- ✅ Parallel browser tests (Chrome, Firefox, Safari)
 - ✅ Retry logic
 - ✅ Report publishing
 - ✅ CTRF and GitHub issue reporting
+
+### 🌐 Browser Support
+
+The test suite runs all tests across multiple browsers in CI:
+
+- **Chrome** (Chromium)
+- **Firefox**
+- **Safari** (WebKit)
 
 ---
 
@@ -270,6 +278,11 @@ This project includes automated failure reporting through GitHub Actions.
 - Immediate feedback loop
 - Centralized error tracking
 - Reduced manual investigation time
+
+### 📝 Example
+
+Here's an example of an automatically created issue when tests fail:
+[Issue #14 - CI Failed: Playwright E2E Tests](https://github.com/fbrandao/hubstaff-qa-challenge/issues/14)
 
 You can find these issues under the **Issues** tab labeled with:
 
