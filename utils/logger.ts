@@ -36,7 +36,7 @@ class Logger {
 
   public header(title: string): void {
     console.log('\n' + '='.repeat(50));
-    console.log(`${this.colors.info}📌 ${title.toUpperCase()}${this.colors.reset}`);
+    console.log(`${this.colors.info}📌  ${title.toUpperCase()}${this.colors.reset}`);
     console.log('='.repeat(50) + '\n');
   }
 

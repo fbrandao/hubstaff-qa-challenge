@@ -38,8 +38,11 @@ async function globalSetup() {
       'Required services are not available. Please check the logs above for details.',
     );
   }
+  logger.header('User Session');
   logger.message('Logging in and saving session state...');
   await createStorageStates();
+  logger.message('Global setup done', 'success');
+  logger.header('Test Run');
 }
 
 export default globalSetup;

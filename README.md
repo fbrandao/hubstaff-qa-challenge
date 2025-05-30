@@ -187,6 +187,8 @@ After test runs, reports are saved in `reports/e2e/`:
 - `results.xml`: JUnit format
 - `ctrf.json`: Common Test Results Format
 
+> 📝 **Example**: See a real CTRF report in action from our [CI run](https://github.com/fbrandao/hubstaff-qa-challenge/actions/runs/15342886456) with some tests failing (forced failures)
+
 ---
 
 ## 🐳 Docker Support
