@@ -19,7 +19,7 @@ export class ProjectsPage extends BasePage {
   readonly projectNameElements = this.page.locator('.project-name');
   readonly toastMessage = this.page.locator('.jGrowl-message');
 
-  protected getReadinessChecks(): ReadinessCheck[] {
+  getReadinessChecks(): ReadinessCheck[] {
     return [
       {
         description: 'Projects heading is visible',
@@ -57,7 +57,7 @@ export class ProjectsPage extends BasePage {
 
   /** Opens the new project modal and waits for the projects list to refresh */
   async clickAddProject() {
-    await this.waitForApiResponseWithAction({
+    await this.waitForActionAndApiResponses({
       page: this.page,
       requests: [{ method: 'GET', url: /projects/ }],
       action: () => this.addProjectButton.click(),
@@ -67,7 +67,7 @@ export class ProjectsPage extends BasePage {
   /** Creates a new project with the given name and waits for the list to refresh */
   async createProject(name: string) {
     await this.newProjectModal.fillForm(name);
-    await this.waitForApiResponseWithAction({
+    await this.waitForActionAndApiResponses({
       page: this.page,
       requests: [
         { method: 'POST', url: /projects\.json/ },
@@ -119,7 +119,7 @@ export class ProjectsPage extends BasePage {
     await projectRow.locator('.table-actions-dropdown .dropdown-toggle').click();
 
     // Click the delete option in the teleported dropdown menu and wait for the delete dialog
-    await this.waitForApiResponseWithAction({
+    await this.waitForActionAndApiResponses({
       page: this.page,
       requests: [{ method: 'GET', url: /\/projects\/\d+\/delete_dialog\.dialog/ }],
       action: () =>
@@ -128,7 +128,7 @@ export class ProjectsPage extends BasePage {
 
     await expect(this.deleteProjectModal).toBeReady();
 
-    await this.waitForApiResponseWithAction({
+    await this.waitForActionAndApiResponses({
       page: this.page,
       requests: [
         { method: 'POST', url: /\/projects\/\d+$/ },

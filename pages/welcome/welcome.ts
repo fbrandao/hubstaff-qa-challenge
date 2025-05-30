@@ -9,7 +9,7 @@ export class WelcomePage extends BasePage {
   readonly createOrganizationButton: Locator;
   readonly tryDifferentEmailButton: Locator;
   readonly requestAccessButton: Locator;
-  protected url = '/welcome';
+  protected baseUrl = '/welcome';
 
   constructor(page: Page) {
     super(page);

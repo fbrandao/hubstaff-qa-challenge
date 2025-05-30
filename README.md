@@ -163,10 +163,10 @@ TEST_USER_PASSWORD=your-test-user-password
 
 👤 For the test user credentials, you can use any valid Hubstaff account or create a new one specifically for testing.
 
-> ⚠️ **Note**: The `.env` file is only needed for local development. In CI/CD, all environment variables and secrets are securely stored in GitHub:
->
-> - Environment variables (BASE_URL, APP_BASE_URL, etc.) are stored as GitHub Variables
-> - Sensitive data (MAILSLURP_API_KEY, TEST_USER_EMAIL, TEST_USER_PASSWORD) are stored as GitHub Secrets
+⚠️ **Important Note**: The `.env` file is only needed for local runs or docker runs. In CI/CD, all environment variables and secrets are securely stored in GitHub:
+
+- Environment variables (BASE_URL, APP_BASE_URL, etc.) are stored as GitHub Variables
+- Sensitive data (MAILSLURP_API_KEY, TEST_USER_EMAIL, TEST_USER_PASSWORD) are stored as GitHub Secrets
 
 ### 3. Run Tests Locally
 
@@ -323,4 +323,4 @@ You can find these issues under the **Issues** tab labeled with:
 
 ## 📝 License
 
-This project is licensed under the [ISC License](https://opensource.org/licenses/ISC).
+This project is licensed under the [MIT License](https://opensource.org/licenses/MIT).

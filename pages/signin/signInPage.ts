@@ -14,7 +14,7 @@ export class SignInPage extends BasePage {
     this.logo = this.page.getByRole('link', { name: 'Hubstaff online time tracking' });
   }
 
-  protected getReadinessChecks(): ReadinessCheck[] {
+  getReadinessChecks(): ReadinessCheck[] {
     return [
       {
         description: 'Login Form is ready',

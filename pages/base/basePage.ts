@@ -16,7 +16,11 @@ export abstract class BasePage {
     protected readonly baseUrlType: BaseUrlType = 'marketing', // default to marketing
   ) {}
   protected abstract baseUrl: string;
-  protected abstract getReadinessChecks(): ReadinessCheck[];
+
+  /**
+   * Returns an array of readiness checks that determine if the component is ready for interaction.
+   */
+  abstract getReadinessChecks(): ReadinessCheck[];
 
   get context() {
     return this.page.context();
@@ -26,12 +30,18 @@ export abstract class BasePage {
     return this.page.url();
   }
 
+  /**
+   * Navigates to the page.
+   */
   async goto() {
     const base = getBaseUrl(this.baseUrlType);
     const fullUrl = buildUrl(base, this.baseUrl);
     await this.page.goto(fullUrl, { waitUntil: 'domcontentloaded' });
   }
 
+  /**
+   * Waits until all readiness checks pass for this component. Throws if any check fails.
+   */
   async waitUntilReady(): Promise<void> {
     await test.step('Wait until page is ready', async () => {
       const checks = this.getReadinessChecks();
@@ -53,7 +63,10 @@ export abstract class BasePage {
     });
   }
 
-  async waitForApiResponseWithAction(options: {
+  /**
+   * Waits for API responses triggered by an action.
+   */
+  async waitForActionAndApiResponses(options: {
     page: Page;
     requests: ApiRequest[];
     action: () => Promise<void>;

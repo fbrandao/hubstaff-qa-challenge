@@ -1,7 +1,7 @@
 import { expect, Page } from '@playwright/test';
 import { BasePage } from '../../base/basePage';
 import { PaymentModal } from './modals/paymentModal';
-
+import { ReadinessCheck } from '../../base/types';
 export class CreatePaymentsPage extends BasePage {
   protected readonly baseUrl = '/team_payments';
 
@@ -35,7 +35,7 @@ export class CreatePaymentsPage extends BasePage {
   readonly selectedCount = this.page.locator('#selected-count');
   readonly createPaymentButton = this.page.getByRole('link', { name: 'Create payment' });
 
-  protected getReadinessChecks() {
+  getReadinessChecks(): ReadinessCheck[] {
     return [
       {
         type: 'assertion' as const,
@@ -64,7 +64,7 @@ export class CreatePaymentsPage extends BasePage {
   }
 
   async openCreatePaymentModal() {
-    await this.waitForApiResponseWithAction({
+    await this.waitForActionAndApiResponses({
       page: this.page,
       requests: [
         {
