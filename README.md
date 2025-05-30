@@ -1,11 +1,11 @@
 # 🧪 Hubstaff QA Automation Challenge
 
 [![CI](https://github.com/fbrandao/hubstaff-qa-challenge/actions/workflows/playwright.yml/badge.svg)](https://github.com/fbrandao/hubstaff-qa-challenge/actions/workflows/playwright.yml)
-[![License: ISC](https://img.shields.io/badge/License-ISC-blue.svg)](https://opensource.org/licenses/ISC)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://prettier.io/)
 [![Made with Playwright](https://img.shields.io/badge/tested%20with-Playwright-45ba63.svg?logo=playwright)](https://playwright.dev/)
 
-A modern end-to-end (E2E) test automation framework built with **Playwright + TypeScript**, using the **Page Object Model (POM)** design pattern to validate Hubstaff’s core flows with scalability, reliability, and maintainability in mind.
+A modern end-to-end (E2E) test automation framework built with **Playwright + TypeScript**, using the **Page Object Model (POM)** design pattern to validate Hubstaff's core flows with scalability, reliability, and maintainability in mind.
 
 ---
 
@@ -47,7 +47,7 @@ class SignInForm extends BaseComponent {
   }
 }
 
-class BasePage {
+class MyCustomPage extends BasePage {
   signInForm = new SignInForm(this.page, this.page.locator('form'));
   async login(email: string, password: string) {
     await this.signInForm.login(email, password);
@@ -57,7 +57,7 @@ class BasePage {
 
 ### ✅ Readiness System
 
-Ensures components are ready before interaction:
+Uses a customer matcher that allows ensuring that components and pages are ready before interaction based on their own readiness checks:
 
 ```ts
 expect.extend({
@@ -69,6 +69,21 @@ expect.extend({
       return { pass: false, message: () => `Readiness failed: ${e.message}` };
     }
   },
+});
+```
+
+This allows us to do something like:
+```ts
+// In your test file
+test('should load dashboard successfully', async ({ page }) => {
+  const dashboard = new DashboardPage(page);
+  
+  // Wait for the page to be fully ready before interacting
+  await expect(dashboard).toBeReady();
+  
+  // Now safe to interact with the page
+  await dashboard.clickCreateProject();
+  await expect(dashboard.projectList).toBeVisible();
 });
 ```
 
@@ -216,6 +231,39 @@ Includes GitHub Actions config with:
 
 ---
 
+## 📣 CI Failure Auto-Reporting
+
+This project includes automated failure reporting through GitHub Actions.
+
+### 🔁 How It Works
+
+- Whenever **E2E tests fail** on CI (`main` or pull requests), the workflow:
+  1. Downloads the CTRF report (`ctrf.json`)
+  2. Extracts failed tests and stack traces
+  3. Opens a **GitHub Issue** with:
+     - Timestamp of failure
+     - Commit link
+     - Failed test titles
+     - Error messages and stack traces
+     - Link to the full workflow run
+
+### 🛠 Setup Details
+
+- The issue is created via [`actions/github-script`](https://github.com/actions/github-script)
+- Triggered only when the E2E job fails (`needs.e2e-tests.result == 'failure'`)
+- Output format is based on CTRF JSON for consistency
+
+### 📌 Benefits
+
+- Automatic triage visibility
+- Immediate feedback loop
+- Centralized error tracking
+- Reduced manual investigation time
+
+You can find these issues under the **Issues** tab labeled with:
+- `CI Failure`
+- `Playwright`
+---
 ## 🎯 Best Practices
 
 - 🧱 Page Object Model for reusability
