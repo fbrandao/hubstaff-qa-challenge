@@ -144,11 +144,11 @@ jobs:
             const timestamp = new Date().toISOString();
 
             let body = `## ❌ Playwright E2E Tests Failed\n ### 🕒 Timestamp: ${timestamp}\n 🔗 [Workflow Run](${runUrl})\n\n`;
-          
+
             if (fs.existsSync(reportPath)) {
               const report = JSON.parse(fs.readFileSync(reportPath, 'utf-8'));
               const tests = Array.isArray(report?.results?.tests) ? report.results.tests : [];
-          
+
               const failedTests = tests
                 .filter(test => test.status === 'failed')
                 .map(test => {
@@ -156,12 +156,12 @@ jobs:
                          `File: \`${stripAnsi(test.filePath)}\`\n` +
                          `Error:\n\`\`\`\n${stripAnsi(test.message || 'No message')}\n\`\`\`\n---`;
                 }).join('\n');
-          
+
               body += `## Failed Tests\n${failedTests || 'No failed test details found.'}`;
             } else {
               body += `⚠️ No CTRF report found.`;
             }
-          
+
             github.rest.issues.create({
               owner: context.repo.owner,
               repo: context.repo.repo,

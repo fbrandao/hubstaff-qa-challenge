@@ -160,10 +160,11 @@ TEST_USER_PASSWORD=your-test-user-password
 ```
 
 🔑 Register for free and retrieve your API key from [MailSlurp](https://mailslurp.com)
- 
+
 👤 For the test user credentials, you can use any valid Hubstaff account or create a new one specifically for testing.
->
+
 > ⚠️ **Note**: The `.env` file is only needed for local development. In CI/CD, all environment variables and secrets are securely stored in GitHub:
+>
 > - Environment variables (BASE_URL, APP_BASE_URL, etc.) are stored as GitHub Variables
 > - Sensitive data (MAILSLURP_API_KEY, TEST_USER_EMAIL, TEST_USER_PASSWORD) are stored as GitHub Secrets
 
