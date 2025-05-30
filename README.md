@@ -73,14 +73,15 @@ expect.extend({
 ```
 
 This allows us to do something like:
+
 ```ts
 // In your test file
 test('should load dashboard successfully', async ({ page }) => {
   const dashboard = new DashboardPage(page);
-  
+
   // Wait for the page to be fully ready before interacting
   await expect(dashboard).toBeReady();
-  
+
   // Now safe to interact with the page
   await dashboard.clickCreateProject();
   await expect(dashboard.projectList).toBeVisible();
@@ -261,9 +262,12 @@ This project includes automated failure reporting through GitHub Actions.
 - Reduced manual investigation time
 
 You can find these issues under the **Issues** tab labeled with:
+
 - `CI Failure`
 - `Playwright`
+
 ---
+
 ## 🎯 Best Practices
 
 - 🧱 Page Object Model for reusability
