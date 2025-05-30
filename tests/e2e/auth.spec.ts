@@ -12,7 +12,7 @@ test.describe('Authentication Scenarios', () => {
     const inbox = await emailClient.createInbox({ prefix: 'e2e-automation' });
     testUser.email = inbox.emailAddress;
     inboxId = inbox.id;
-    await landingPage.open();
+    //await landingPage.open();
   });
 
   test('User can sign up for a 14-day trial and confirm email', async ({
