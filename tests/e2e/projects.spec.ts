@@ -3,7 +3,7 @@ import { storageStatePaths } from '../../utils/auth/config';
 
 test.use({ storageState: storageStatePaths.owner });
 
-test.describe('Projects Management Scenarios', () => {
+test.describe.serial('Projects Management Scenarios', () => {
   test.beforeEach(async ({ projectsPage }) => {
     await test.step('Navigate to projects page', async () => {
       await projectsPage.open();
