@@ -11,4 +11,10 @@ export const test = mergeTests(base, pageFixtures, utilsFixtures, emailFixtures,
 
 baseExpect.extend(customMatchers);
 
+test.beforeEach(async ({}, testInfo) => {
+  testInfo.annotations.push({
+    type: 'browser',
+    description: testInfo.project.name,
+  });
+});
 export { baseExpect as expect };
