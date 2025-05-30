@@ -1,287 +1,231 @@
-# Hubstaff QA Automation Challenge
+# 🧪 Hubstaff QA Automation Challenge
 
-This project is an end-to-end (E2E) test automation framework built with Playwright for testing the Hubstaff application. The framework follows the Page Object Model (POM) pattern and implements best practices for test automation.
+[![CI](https://github.com/fbrandao/hubstaff-qa-challenge/actions/workflows/playwright.yml/badge.svg)](https://github.com/fbrandao/hubstaff-qa-challenge/actions/workflows/playwright.yml)
+[![License: ISC](https://img.shields.io/badge/License-ISC-blue.svg)](https://opensource.org/licenses/ISC)
+[![Prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://prettier.io/)
+[![Made with Playwright](https://img.shields.io/badge/tested%20with-Playwright-45ba63.svg?logo=playwright)](https://playwright.dev/)
 
-## 🏗️ Architecture
+A modern end-to-end (E2E) test automation framework built with **Playwright + TypeScript**, using the **Page Object Model (POM)** design pattern to validate Hubstaff’s core flows with scalability, reliability, and maintainability in mind.
 
-### Project Structure
+---
+
+## 📁 Project Structure
+
 ```
-├── tests/
-│   └── e2e/                 # E2E test specifications
-├── pages/                   # Page Object Models
-│   ├── base/               # Base page classes
+├── tests/e2e/               # E2E test specifications
+├── pages/                  # Page Object Models
+│   ├── base/               # Base page/component classes
 │   ├── common/             # Shared components
 │   ├── landing/            # Landing page
-│   ├── signin/             # Sign in page
-│   ├── signup/             # Sign up page
-│   └── ...                 # Other page objects
-├── fixtures/               # Test fixtures and test data
-├── utils/                  # Utility functions and helpers
-├── storage/               # Storage state management
-└── reports/               # Test execution reports
+│   ├── signin/             # Sign-in page
+│   ├── signup/             # Sign-up page
+│   └── ...                 # Other feature pages
+├── fixtures/               # Custom test fixtures and test data
+├── utils/                  # Environment configs, helpers
+├── storage/                # Storage state management
+└── reports/                # Test reports and traces
 ```
 
-### Key Components
+---
 
-1. **Page Object Model (POM)**
-   - Each page is represented by a class that encapsulates its elements and actions
-   - Base page class provides common functionality
-   - Components are modularized for reusability
+## 🧱 Architecture & Design
 
-   Base page and component strategy:
-   ```typescript
-   // Base component with common functionality
-   class BaseComponent {
-     constructor(protected page: Page, protected root: Locator) {}
-     
-     // Common form actions
-     protected async fillInput(testId: string, value: string) {
-       await this.page.getByTestId(testId).fill(value);
-     }
-     
-     protected async clickButton(testId: string) {
-       await this.page.getByTestId(testId).click();
-     }
-   }
+### ✅ Page Object Model (POM)
 
-   // Reusable form component
-   class SignInForm extends BaseComponent {
-     private readonly emailInput = this.page.getByTestId('email-input');
-     private readonly passwordInput = this.page.getByTestId('password-input');
-     private readonly submitButton = this.page.getByTestId('submit-button');
+- Every page is encapsulated in a class
+- Shared components are modularized
+- Common base classes reduce duplication
 
-     async login(email: string, password: string) {
-       await this.fillInput('email-input', email);
-       await this.fillInput('password-input', password);
-       await this.clickButton('submit-button');
-     }
-   }
+Example usage:
 
-   // Base page with component support
-   class BasePage {
-     constructor(protected page: Page) {}
-     signInForm = new SignInForm(this.page, this.page.locator('form'));
-     
-     async login(email: string, password: string) {
-       await this.signInForm.login(email, password);
-     }
-   }
-   ```
+```ts
+class SignInForm extends BaseComponent {
+  async login(email: string, password: string) {
+    await this.fillInput('email-input', email);
+    await this.fillInput('password-input', password);
+    await this.clickButton('submit-button');
+  }
+}
 
-   - Extensive page readiness verification system
-     - Custom `toBeReady()` matcher for comprehensive page state validation
-     - Checks for critical elements, loading states, and error conditions
-     - Ensures stable test execution by waiting for proper page initialization
+class BasePage {
+  signInForm = new SignInForm(this.page, this.page.locator('form'));
+  async login(email: string, password: string) {
+    await this.signInForm.login(email, password);
+  }
+}
+```
 
-   Custom matcher with readiness checks:
-   ```typescript
-   // Custom matcher that uses readiness checks
-   expect.extend({
-     async toBeReady(received: BasePage | BaseComponent) {
-       try {
-         await received.waitUntilReady();
-         return {
-           pass: true,
-           message: () => 'Expected page/component not to be ready, but it was.',
-         };
-       } catch (error) {
-         return {
-           pass: false,
-           message: () => `Readiness check failed: ${error.message}`,
-         };
-       }
-     },
-   });
+### ✅ Readiness System
 
-   // Usage in tests
-   await expect(someCustomPage).toBeReady();
-   ```
+Ensures components are ready before interaction:
 
-2. **Test Structure**
-   - Tests are organized by feature/functionality
-   - Each test file focuses on a specific area (auth, projects, payments)
-   - Uses Playwright's test fixtures for dependency injection
-   - Custom fixtures for:
-     - Test user management
-     - API client initialization
-     - Page object instantiation
-     - Email client setup
-     - Storage state handling
+```ts
+expect.extend({
+  async toBeReady(received: BasePage | BaseComponent) {
+    try {
+      await received.waitUntilReady();
+      return { pass: true, message: () => 'Page is ready.' };
+    } catch (e) {
+      return { pass: false, message: () => `Readiness failed: ${e.message}` };
+    }
+  },
+});
+```
 
-3. **Configuration**
-   - Environment-specific configurations
-   - CI/CD pipeline integration
-   - Cross-browser testing support
+---
 
 ## 🧪 Testing Strategy
 
-### Test Categories
-1. **Authentication Tests**
-   - User registration
-   - Email confirmation
-   - Login functionality
-   - Session management
+### 🔹 Categories
 
-2. **Project Management Tests**
-   - Project creation
-   - Project settings
-   - Team management
+- **Authentication**: Sign up, login, email confirmation
+- **Projects**: Creation, update, team assignment
+- **Payments**: Bonus creation, summaries, approval flows
 
-3. **Financial Tests**
-   - Payment processing
-   - Team payments
-   - Financial reporting
+### 🔹 Features
 
-### Test Implementation
-- Uses Playwright's built-in test runner
-- Implements step-by-step test scenarios
-- Includes proper assertions and validations
-- Handles asynchronous operations
-- Manages test data and state
+- Isolated feature-based tests
+- Full use of Playwright fixtures
+- Dynamic test data
+- Rich assertions & retries
 
-### Advanced Features
+---
 
-1. **Email Testing with MailSlurp**
-   - Integration with MailSlurp for email testing
-   - Dynamic email inbox creation for each test
-   - Email content verification and link extraction
-   - Automatic email cleanup after tests
-   - Support for email confirmation flows
+## 🔌 Integrations
 
-2. **API Integration**
-   - Direct API calls for test data setup
-   - User account creation via API
-   - Session management and authentication
-   - Test data cleanup
-   - API-based state verification
+### ✅ MailSlurp (Email Testing)
 
-3. **Custom Matchers**
-   - Extended Playwright's expect functionality
-   - Custom matchers for common assertions
-   - Enhanced error messages
-   - Type-safe matcher definitions
-   - Reusable across test suite
+- Auto inbox creation per test
+- Email link extraction
+- Email verification flow support
 
-4. **Page Readiness System**
-   - Comprehensive page state verification
-   - Checks for:
-     - Critical UI elements
-     - Loading states
-     - Error conditions
-     - Network requests
-     - DOM stability
-   - Configurable timeout and retry mechanisms
-   - Automatic screenshot capture on failure
+### ✅ API Utility Layer
 
-## 🛠️ Technical Stack
+- Programmatic user creation
+- Session setup & cookie management
+- Fast test data setup and teardown
+
+---
+
+## ⚙️ Configuration & Tooling
 
 - **Framework**: Playwright
 - **Language**: TypeScript
-- **Package Manager**: npm
-- **Testing**: Playwright Test Runner
-- **Code Quality**: ESLint, Prettier
-- **Reporting**: HTML, JSON, JUnit reports
-- **Email Testing**: MailSlurp
-- **API Testing**: Axios with cookie support
+- **Linter**: ESLint
+- **Formatter**: Prettier
+- **Reports**: HTML, JSON, JUnit, CTRF
+- **Runner**: Playwright Test
+- **Env**: `.env` files with `getEnvVar` helper
+- **CI/CD**: GitHub Actions + Docker
+
+---
 
 ## 🚀 Getting Started
 
-1. **Installation**
-   ```bash
-   npm install
-   ```
+### 1. Install Dependencies
 
-2. **Running Tests**
-   ```bash
-   # Run all tests
-   npm test
+```bash
+npm install
+```
 
-   # Run tests with UI
-   npm run test:ui
+### 2. Setup `.env` File
 
-   # Generate test code
-   npm run codegen
-   ```
+Create a `.env` in the root with:
 
-3. **Code Quality**
-   ```bash
-   # Lint code
-   npm run lint
+```
+BASE_URL=https://hubstaff.com
+APP_BASE_URL=https://app.hubstaff.com
+MARKETING_API_BASE=https://api.marketing.hubstaff.com
+ACCOUNT_API_BASE=https://account.hubstaff.com
+APP_API_BASE=https://app.hubstaff.com
+MAILSLURP_API_KEY=your-api-key
+```
 
-   # Format code
-   npm run format
-   ```
+> 🔑 Register and retrieve your API key from [MailSlurp](https://mailslurp.com)
 
-## 📊 Reporting
+### 3. Run Tests
 
-The framework generates multiple report formats:
-- HTML reports for detailed test results
-- JSON reports for CI integration
-- JUnit reports for test results
-- CTRF (Common Test Results Format) for standardized reporting
+```bash
+npm test            # Run all tests
+npm run test:ui     # Interactive UI mode
+npm run codegen     # Open codegen tool
+```
 
-## 🔄 CI/CD Integration
+---
 
-The framework is configured for CI environments with:
-- Parallel test execution
-- Retry mechanisms for flaky tests
-- Environment-specific configurations
-- GitHub Actions integration
+## 🧹 Code Quality
 
-## 🎯 Best Practices
+```bash
+npm run lint         # Lint check
+npm run format       # Format with Prettier
+```
 
-1. **Code Organization**
-   - Clear separation of concerns
-   - Modular and reusable components
-   - Consistent naming conventions
+---
 
-2. **Test Design**
-   - Independent test cases
-   - Proper test isolation
-   - Meaningful test descriptions
-   - Step-by-step test structure
+## 📊 Test Reports
 
-3. **Maintenance**
-   - Regular dependency updates
-   - Code quality checks
-   - Documentation updates
+After test runs, reports are saved in `reports/e2e/`:
 
-## 📝 License
+- `index.html`: HTML summary
+- `results.json`: JSON for CI parsing
+- `results.xml`: JUnit format
+- `ctrf.json`: Common Test Results Format
 
-This project is licensed under the ISC License.
+---
 
 ## 🐳 Docker Support
 
-The project includes Docker support for running tests in a containerized environment. This ensures consistent test execution across different environments.
+Run tests in a consistent Dockerized environment.
 
-### Building the Docker Image
+### 🔨 Build Image
 
 ```bash
 docker build -t hubstaff-qa .
 ```
 
-### Running Tests in Docker
-
-1. **Run all tests in all browsers**
-   ```bash
-   docker run hubstaff-qa
-   ```
-
-2. **Run tests in specific browser**
-   ```bash
-   docker run -e BROWSER=Chrome hubstaff-qa
-   ```
-
-### Environment Variables
-
-- `BROWSER`: Browser to run tests in
-  - `all` (default): Run in all configured browsers
-  - `Chrome`: Run only in Chrome
-
-### Volume Mounting
-
-To persist test results and reports:
+### ▶ Run Tests
 
 ```bash
-docker run -v $(pwd)/reports:/app/reports hubstaff-qa
+docker run --env-file .env hubstaff-qa
 ```
+
+### 📦 Volume Mount (optional)
+
+To retain test results:
+
+```bash
+docker run --env-file .env -v $(pwd)/reports:/app/reports hubstaff-qa
+```
+
+### 🔁 Run with a Specific Browser
+
+```bash
+docker run --env-file .env -e BROWSER=Chrome hubstaff-qa
+```
+
+---
+
+## 🔁 CI/CD Integration
+
+Includes GitHub Actions config with:
+
+- ✅ Parallel browser tests
+- ✅ Retry logic
+- ✅ Report publishing
+- ✅ CTRF and GitHub issue reporting
+
+---
+
+## 🎯 Best Practices
+
+- 🧱 Page Object Model for reusability
+- 🔒 Isolated, atomic test cases
+- 🚦 Custom readiness matchers for stability
+- ♻️ Clean state management
+- ✨ Clear naming and file structure
+
+---
+
+## 📝 License
+
+This project is licensed under the [ISC License](https://opensource.org/licenses/ISC).
