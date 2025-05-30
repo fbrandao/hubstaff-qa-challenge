@@ -1,12 +1,12 @@
 import { Locator, Page } from '@playwright/test';
 import { BasePage } from '../base/basePage';
 import { ReadinessCheck } from '../base/types';
-import { LoginForm } from './sections/loginForm';
+import { LoginForm } from './components/loginForm';
 
 export class SignInPage extends BasePage {
   readonly logo: Locator;
   readonly loginForm: LoginForm;
-  protected url = '/login';
+  protected baseUrl = '/login';
 
   constructor(page: Page) {
     super(page);

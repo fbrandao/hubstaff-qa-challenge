@@ -1,15 +1,15 @@
 import { Page } from '@playwright/test';
 import { BasePage } from '../base/basePage';
-import { HeroForm } from './sections/heroForm';
-import { FeatureTabs } from './sections/featureTabs';
-import { Header } from './sections/header';
+import { HeroForm } from './components/heroForm';
+import { FeatureTabs } from './components/featureTabs';
+import { Header } from './components/header';
 import { ReadinessCheck } from '../base/types';
 
 export class LandingPage extends BasePage {
   readonly header: Header;
   readonly heroForm: HeroForm;
   readonly featureTabs: FeatureTabs;
-  protected url = '';
+  protected baseUrl = '';
 
   constructor(page: Page) {
     super(page);

@@ -1,9 +1,9 @@
 import { expect, Page } from '@playwright/test';
 import { BasePage } from '../../base/basePage';
-import { PaymentModal } from './components/paymentModal';
+import { PaymentModal } from './modals/paymentModal';
 
 export class CreatePaymentsPage extends BasePage {
-  protected readonly url = '/team_payments';
+  protected readonly baseUrl = '/team_payments';
 
   constructor(page: Page) {
     super(page, 'app');

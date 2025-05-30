@@ -1,10 +1,10 @@
 import { Page } from '@playwright/test';
 import { BasePage } from '../base/basePage';
-import { SignUpForm } from './sections/signUpForm';
+import { SignUpForm } from './components/signUpForm';
 
 export class SignUpPage extends BasePage {
   readonly signUpForm: SignUpForm;
-  protected url = '/signup';
+  protected baseUrl = '/signup';
 
   constructor(page: Page) {
     super(page);

@@ -1,12 +1,12 @@
 import { Page, expect } from '@playwright/test';
 import { BasePage } from '../base/basePage';
 import { ReadinessCheck } from '../base/types';
-import { NewProjectModal } from './components/newProjectModal';
-import { DeleteProjectModal } from './components/deleteProjectModal';
+import { NewProjectModal } from './modals/newProjectModal';
+import { DeleteProjectModal } from './modals/deleteProjectModal';
 import { faker } from '@faker-js/faker';
 
 export class ProjectsPage extends BasePage {
-  protected url = '/projects';
+  protected baseUrl = '/projects';
 
   constructor(page: Page) {
     super(page, 'app');

@@ -15,7 +15,7 @@ export abstract class BasePage {
     protected readonly page: Page,
     protected readonly baseUrlType: BaseUrlType = 'marketing', // default to marketing
   ) {}
-  protected abstract url: string;
+  protected abstract baseUrl: string;
   protected abstract getReadinessChecks(): ReadinessCheck[];
 
   get context() {
@@ -28,7 +28,7 @@ export abstract class BasePage {
 
   async goto() {
     const base = getBaseUrl(this.baseUrlType);
-    const fullUrl = buildUrl(base, this.url);
+    const fullUrl = buildUrl(base, this.baseUrl);
     await this.page.goto(fullUrl, { waitUntil: 'domcontentloaded' });
   }
 
