@@ -141,7 +141,13 @@ jobs:
             const runUrl = `https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}`;
             const commitUrl = `https://github.com/${{ github.repository }}/commit/${{ github.sha }}`;
             const timestamp = new Date().toISOString();
-
+            try {
+              const report = JSON.parse(fs.readFileSync(reportPath, 'utf-8'));
+              console.log("📄 Parsed CTRF report keys:", Object.keys(report));
+              console.log("🔍 Sample content:", JSON.stringify(report, null, 2));
+            } catch (e) {
+              console.log("❌ Failed to parse CTRF report:", e.message);
+            }
             let body = `## ❌ Playwright E2E Tests Failed\n`;
             body += `### 🕒 Timestamp: ${timestamp}\n`;
             body += `🔗 [Workflow Run](${runUrl})\n\n`;
