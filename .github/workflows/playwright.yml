@@ -139,37 +139,27 @@ jobs:
 
             const reportPath = path.resolve("downloaded-artifacts/ctrf/reports/e2e/ctrf.json");
             const runUrl = `https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}`;
-            const commitUrl = `https://github.com/${{ github.repository }}/commit/${{ github.sha }}`;
             const timestamp = new Date().toISOString();
-            try {
-              const report = JSON.parse(fs.readFileSync(reportPath, 'utf-8'));
-              console.log("📄 Parsed CTRF report keys:", Object.keys(report));
-              console.log("🔍 Sample content:", JSON.stringify(report, null, 2));
-            } catch (e) {
-              console.log("❌ Failed to parse CTRF report:", e.message);
-            }
-            let body = `## ❌ Playwright E2E Tests Failed\n`;
-            body += `### 🕒 Timestamp: ${timestamp}\n`;
-            body += `🔗 [Workflow Run](${runUrl})\n\n`;
 
+            let body = `## ❌ Playwright E2E Tests Failed\n ### 🕒 Timestamp: ${timestamp}\n 🔗 [Workflow Run](${runUrl})\n\n`;
+          
             if (fs.existsSync(reportPath)) {
               const report = JSON.parse(fs.readFileSync(reportPath, 'utf-8'));
-              const failedTests = report.suites
-                .flatMap(suite => suite.suites || [])
-                .flatMap(suite => suite.specs || [])
-                .filter(spec => spec.tests.some(t => t.results.some(r => r.status === 'failed')))
-                .map(spec => {
-                  const fail = spec.tests.flatMap(t => t.results).find(r => r.status === 'failed');
-                  return `### ❌ ${stripAnsi(spec.title)}\n` +
-                         `File: \`${stripAnsi(spec.file)}\`\n` +
-                         `Error:\n\`\`\`\n${stripAnsi(fail.errors?.[0]?.message || 'No message')}\n\`\`\`\n---`;
+              const tests = Array.isArray(report?.results?.tests) ? report.results.tests : [];
+          
+              const failedTests = tests
+                .filter(test => test.status === 'failed')
+                .map(test => {
+                  return `### ❌ ${stripAnsi(test.name)}\n` +
+                         `File: \`${stripAnsi(test.filePath)}\`\n` +
+                         `Error:\n\`\`\`\n${stripAnsi(test.message || 'No message')}\n\`\`\`\n---`;
                 }).join('\n');
-
-              body += `## Failed Tests\n${failedTests || 'No test details available.'}`;
+          
+              body += `## Failed Tests\n${failedTests || 'No failed test details found.'}`;
             } else {
               body += `⚠️ No CTRF report found.`;
             }
-
+          
             github.rest.issues.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
