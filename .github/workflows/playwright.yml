@@ -83,6 +83,8 @@ jobs:
           ACCOUNT_API_BASE: ${{ vars.ACCOUNT_API_BASE }}
           APP_BASE_URL: ${{ vars.APP_BASE_URL }}
           MAILSLURP_API_KEY: ${{ secrets.MAILSLURP_API_KEY }}
+          TEST_USER_EMAIL: ${{ secrets.TEST_USER_EMAIL }}
+          TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
           CI: true
       - name: List all files and folders (root)
         if: always()

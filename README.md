@@ -155,16 +155,23 @@ MARKETING_API_BASE=https://api.marketing.hubstaff.com
 ACCOUNT_API_BASE=https://account.hubstaff.com
 APP_API_BASE=https://app.hubstaff.com
 MAILSLURP_API_KEY=your-api-key
+TEST_USER_EMAIL=your-test-user-email
+TEST_USER_PASSWORD=your-test-user-password
 ```
 
-> 🔑 Register and retrieve your API key from [MailSlurp](https://mailslurp.com)
+🔑 Register for free and retrieve your API key from [MailSlurp](https://mailslurp.com)
+ 
+👤 For the test user credentials, you can use any valid Hubstaff account or create a new one specifically for testing.
+>
+> ⚠️ **Note**: The `.env` file is only needed for local development. In CI/CD, all environment variables and secrets are securely stored in GitHub:
+> - Environment variables (BASE_URL, APP_BASE_URL, etc.) are stored as GitHub Variables
+> - Sensitive data (MAILSLURP_API_KEY, TEST_USER_EMAIL, TEST_USER_PASSWORD) are stored as GitHub Secrets
 
-### 3. Run Tests
+### 3. Run Tests Locally
 
 ```bash
 npm test            # Run all tests
 npm run test:ui     # Interactive UI mode
-npm run codegen     # Open codegen tool
 ```
 
 ---

@@ -1,8 +1,9 @@
+import { getEnvVar } from '../env';
+
 export const fixedUsers = [
   {
     role: 'owner',
-    email: 'e2e-cH5U9ttkOwLl@mailslurp.biz',
-    password: 'sZuV8CUHHEeE',
+    email: getEnvVar('TEST_USER_EMAIL'),
+    password: getEnvVar('TEST_USER_PASSWORD'),
   },
-  // Add more if needed
 ] as const;
