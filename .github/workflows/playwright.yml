@@ -96,7 +96,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: e2e-test-report
-          path: reports/e2e
+          path: |
+            reports/e2e
+            ctrf/reports/e2e
           retention-days: 14
 
       - name: Publish Test Report (CTRF JSON)
@@ -135,7 +137,7 @@ jobs:
               ).replace(/[^\x00-\x7F]/g, "");
             }
 
-            const reportPath = path.resolve("downloaded-artifacts/reports/e2e/ctrf.json");
+            const reportPath = path.resolve("downloaded-artifacts/ctrf/reports/e2e/ctrf.json");
             const runUrl = `https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}`;
             const commitUrl = `https://github.com/${{ github.repository }}/commit/${{ github.sha }}`;
             const timestamp = new Date().toISOString();

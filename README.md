@@ -280,6 +280,23 @@ You can find these issues under the **Issues** tab labeled with:
 
 ---
 
+## 🔮 Future Improvements
+
+### 🛠️ API Layer Enhancements
+- Expand API client coverage for all endpoints
+- Add more test data factories for common scenarios
+
+### 📱 Mobile Testing
+- Support responsive and mobile viewport testing
+- Add touch event utilities and mobile assertions
+
+### 🧪 Test Coverage
+- Add accessibility and performance tests
+- Integrate visual regression testing
+- Implement API response schema validation
+
+---
+
 ## 📝 License
 
 This project is licensed under the [ISC License](https://opensource.org/licenses/ISC).
