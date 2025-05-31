@@ -11,6 +11,10 @@ export class DeleteProjectModal extends BaseComponent {
   readonly understandCheckbox = this.modal.getByText('I understand and wish to');
   readonly deleteButton = this.page.locator('#delete-button');
 
+  /**
+   * Returns the readiness checks for the delete project modal.
+   * @returns {ReadinessCheck[]} The readiness checks for the delete project modal.
+   */
   getReadinessChecks(): ReadinessCheck[] {
     return [
       {
@@ -26,6 +30,9 @@ export class DeleteProjectModal extends BaseComponent {
     ];
   }
 
+  /**
+   * Confirms the deletion of the project.
+   */
   async confirmDelete() {
     await expect(this.modal).toBeVisible();
     await this.understandCheckbox.click();

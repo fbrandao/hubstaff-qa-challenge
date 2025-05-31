@@ -19,6 +19,10 @@ export class ProjectsPage extends BasePage {
   readonly projectNameElements = this.page.locator('.project-name');
   readonly toastMessage = this.page.locator('.jGrowl-message');
 
+  /**
+   * Returns the readiness checks for the projects page.
+   * @returns {ReadinessCheck[]} The readiness checks for the projects page.
+   */
   getReadinessChecks(): ReadinessCheck[] {
     return [
       {
@@ -55,7 +59,9 @@ export class ProjectsPage extends BasePage {
     await this.goto();
   }
 
-  /** Opens the new project modal and waits for the projects list to refresh */
+  /**
+   * Opens the new project modal and waits for the projects list to refresh
+   */
   async clickAddProject() {
     await this.waitForActionAndApiResponses({
       page: this.page,
@@ -64,7 +70,10 @@ export class ProjectsPage extends BasePage {
     });
   }
 
-  /** Creates a new project with the given name and waits for the list to refresh */
+  /**
+   * Creates a new project with the given name and waits for the list to refresh
+   * @param {string} name - The name of the project to create.
+   */
   async createProject(name: string) {
     await this.newProjectModal.fillForm(name);
     await this.waitForActionAndApiResponses({
@@ -80,12 +89,19 @@ export class ProjectsPage extends BasePage {
     });
   }
 
-  /** Returns all project names from the current list */
+  /**
+   * Returns all project names from the current list
+   * @returns {string[]} The names of the projects in the current list.
+   */
   async getProjectNames(): Promise<string[]> {
     return this.projectNameElements.allInnerTexts();
   }
 
-  /** Generates a unique project name based on the provided base name */
+  /**
+   * Generates a unique project name based on the provided base name
+   * @param {string} baseName - The base name to generate a unique project name from.
+   * @returns {string} The unique project name.
+   */
   async generateUniqueProjectName(baseName?: string): Promise<string> {
     const trimmedBase = (baseName || faker.company.name()).trim().slice(0, 100);
     if (!trimmedBase) {
@@ -106,7 +122,10 @@ export class ProjectsPage extends BasePage {
     return candidate;
   }
 
-  /** Deletes a project with the given name */
+  /**
+   * Deletes a project with the given name
+   * @param {string} name - The name of the project to delete.
+   */
   async deleteProject(name: string) {
     // Find the project row using the table structure and exact name match
     const projectRow = this.page
@@ -115,10 +134,7 @@ export class ProjectsPage extends BasePage {
       })
       .first();
 
-    // Click the actions dropdown in this specific row
     await projectRow.locator('.table-actions-dropdown .dropdown-toggle').click();
-
-    // Click the delete option in the teleported dropdown menu and wait for the delete dialog
     await this.waitForActionAndApiResponses({
       page: this.page,
       requests: [{ method: 'GET', url: /\/projects\/\d+\/delete_dialog\.dialog/ }],
@@ -138,7 +154,9 @@ export class ProjectsPage extends BasePage {
     });
   }
 
-  /** Cleans up test projects by deleting any that match the test pattern */
+  /**
+   * Cleans up test projects by deleting any that match the test pattern
+   */
   async cleanupTestProjects() {
     const projectNames = await this.getProjectNames();
 

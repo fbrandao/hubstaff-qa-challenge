@@ -1,14 +1,10 @@
 import { test, expect } from '../../fixtures';
-import { setCookieConsent } from '../../utils/cookies/cookieConsent';
 import { extractConfirmationLink } from '../../utils/email/emailExtractor';
 
 let inboxId: string;
 
 test.describe('Authentication Scenarios', () => {
-  test.beforeEach(async ({ landingPage, signUpPage, emailClient, testUser }) => {
-    await setCookieConsent(landingPage.context);
-    await setCookieConsent(signUpPage.context);
-
+  test.beforeEach(async ({ landingPage, emailClient, testUser }) => {
     const inbox = await emailClient.createInbox({ prefix: 'e2e-automation' });
     testUser.email = inbox.emailAddress;
     inboxId = inbox.id;

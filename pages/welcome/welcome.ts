@@ -21,6 +21,10 @@ export class WelcomePage extends BasePage {
     this.requestAccessButton = this.page.getByRole('link', { name: 'Request access to join' });
   }
 
+  /**
+   * Returns the readiness checks for the welcome page.
+   * @returns {ReadinessCheck[]} The readiness checks for the welcome page.
+   */
   getReadinessChecks(): ReadinessCheck[] {
     return [
       {

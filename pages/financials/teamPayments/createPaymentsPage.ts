@@ -35,6 +35,10 @@ export class CreatePaymentsPage extends BasePage {
   readonly selectedCount = this.page.locator('#selected-count');
   readonly createPaymentButton = this.page.getByRole('link', { name: 'Create payment' });
 
+  /**
+   * Returns the readiness checks for the create payments page.
+   * @returns {ReadinessCheck[]} The readiness checks for the create payments page.
+   */
   getReadinessChecks(): ReadinessCheck[] {
     return [
       {
@@ -63,6 +67,9 @@ export class CreatePaymentsPage extends BasePage {
     ];
   }
 
+  /**
+   * Opens the create payment modal.
+   */
   async openCreatePaymentModal() {
     await this.waitForActionAndApiResponses({
       page: this.page,
@@ -76,10 +83,18 @@ export class CreatePaymentsPage extends BasePage {
     });
   }
 
+  /**
+   * Switches to the given tab.
+   * @param {string} tab - The name of the tab to switch to.
+   */
   async switchTab(tab: 'payForHours' | 'approvedTimesheets' | 'oneTimeAmount') {
     await this.tabs[tab].click();
   }
 
+  /**
+   * Selects a member by name.
+   * @param {string} memberName - The name of the member to select.
+   */
   async selectMemberByName(memberName?: string) {
     await this.membersSelect.click();
 
@@ -131,6 +146,12 @@ export class CreatePaymentsPage extends BasePage {
     expect(this.matches(amountText, amount)).toBeTruthy();
   }
 
+  /**
+   * Checks if the actual string matches the expected string or regular expression.
+   * @param {string} value - The actual string to check.
+   * @param {string | RegExp} expected - The expected string or regular expression.
+   * @returns {boolean} True if the actual string matches the expected string or regular expression, false otherwise.
+   */
   private matches(value: string, expected: string | RegExp): boolean {
     return typeof expected === 'string' ? value.includes(expected) : expected.test(value);
   }

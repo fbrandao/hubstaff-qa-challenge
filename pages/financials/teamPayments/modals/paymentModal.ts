@@ -16,6 +16,10 @@ export class PaymentModal extends BaseComponent {
   readonly cancelButton = this.page.locator('#export_payment').getByText('Not now');
   readonly createPaymentButton = this.page.locator('input[name="commit"]');
 
+  /**
+   * Returns the readiness checks for the payment modal.
+   * @returns {ReadinessCheck[]} The readiness checks for the payment modal.
+   */
   getReadinessChecks() {
     return [
       {

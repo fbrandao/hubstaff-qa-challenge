@@ -2,17 +2,23 @@ import { expect, Locator, Page } from '@playwright/test';
 import { BasePage } from '../../base/basePage';
 
 export class PaymentSummaryPage extends BasePage {
-  protected readonly url = '/organizations/:orgId/team_payments/:paymentId';
+  protected readonly baseUrl = '/organizations/:orgId/team_payments/:paymentId';
 
   constructor(page: Page) {
     super(page, 'app');
   }
 
-  // Main summary table
+  /**
+   * The main summary table.
+   */
   readonly table = this.page.locator('.table.has-actions');
   readonly summaryRows = this.table.locator('tbody tr');
 
-  protected getReadinessChecks() {
+  /**
+   * Returns the readiness checks for the payment summary page.
+   * @returns {ReadinessCheck[]} The readiness checks for the payment summary page.
+   */
+  getReadinessChecks() {
     return [
       {
         type: 'assertion' as const,
@@ -31,15 +37,35 @@ export class PaymentSummaryPage extends BasePage {
     ];
   }
 
+  /**
+   * Returns the text of the cell at the given index.
+   * @param {Locator} cells - The cells to get the text from.
+   * @param {number} index - The index of the cell to get the text from.
+   * @returns {Promise<string>} The text of the cell at the given index.
+   */
   private async getCellText(cells: Locator, index: number): Promise<string> {
     return (await cells.nth(index).textContent())?.trim() || '';
   }
 
+  /**
+   * Checks if the actual string matches the expected string or regular expression.
+   * @param {string} actual - The actual string to check.
+   * @param {string | RegExp} expected - The expected string or regular expression.
+   * @returns {boolean} True if the actual string matches the expected string or regular expression, false otherwise.
+   */
   private matches(actual: string, expected: string | RegExp): boolean {
     return typeof expected === 'string' ? actual.includes(expected) : expected.test(actual);
   }
 
-  // Utility: Validate a summary row
+  /**
+   * Validates a summary row.
+   * @param {Object} data - The data to validate the summary row with.
+   * @param {string} data.member - The member of the summary row.
+   * @param {string | RegExp} data.rateType - The rate type of the summary row.
+   * @param {string | RegExp} data.hours - The hours of the summary row.
+   * @param {string | RegExp} data.status - The status of the summary row.
+   * @param {string | RegExp} data.amount - The amount of the summary row.
+   */
   async expectSummaryRow({
     member,
     rateType,

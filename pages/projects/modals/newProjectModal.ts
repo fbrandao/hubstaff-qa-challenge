@@ -18,6 +18,11 @@ export class NewProjectModal extends BaseComponent {
   constructor(page: Page) {
     super(page);
   }
+
+  /**
+   * Returns the readiness checks for the new project modal.
+   * @returns {ReadinessCheck[]} The readiness checks for the new project modal.
+   */
   getReadinessChecks(): ReadinessCheck[] {
     return [
       {

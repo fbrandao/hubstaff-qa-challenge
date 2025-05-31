@@ -47,6 +47,9 @@ export class SignUpForm extends BaseComponent {
     ];
   }
 
+  /**
+   * Accepts the terms and conditions.
+   */
   async acceptTerms() {
     // We are using force here because because a visual overlay (.hsds-form__checkbox-icon)
     // intercepts pointer events, and Playwright's .check() internally performs a mouse click unless force is used.
@@ -54,6 +57,15 @@ export class SignUpForm extends BaseComponent {
     await expect(this.termsCheckbox).toBeChecked();
   }
 
+  /**
+   * Fills the signup form with the given data.
+   * @param {Object} data - The data to fill the form with.
+   * @param {string} data.firstName - The first name to fill in the form.
+   * @param {string} data.lastName - The last name to fill in the form.
+   * @param {string} data.email - The email to fill in the form.
+   * @param {string} data.password - The password to fill in the form.
+   * @param {boolean} data.acceptTerms - Whether to accept the terms and conditions.
+   */
   async fillForm({
     firstName,
     lastName,

@@ -31,6 +31,10 @@ export class FeatureTabs extends BaseComponent {
     ];
   }
 
+  /**
+   * Clicks the tab with the given name.
+   * @param {string} name - The name of the tab to click.
+   */
   async clickTabByName(name: string) {
     const tab = this.tabs.find(t => t.name.toLowerCase() === name.toLowerCase());
     if (tab) {
@@ -40,6 +44,10 @@ export class FeatureTabs extends BaseComponent {
     }
   }
 
+  /**
+   * Returns the readiness checks for the feature tabs.
+   * @returns {ReadinessCheck[]} The readiness checks for the feature tabs.
+   */
   getReadinessChecks(): ReadinessCheck[] {
     return [
       {

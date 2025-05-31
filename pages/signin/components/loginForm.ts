@@ -18,6 +18,10 @@ export class LoginForm extends BaseComponent {
     this.getStartedLink = this.page.getByRole('link', { name: 'Get started' });
   }
 
+  /**
+   * Returns the readiness checks for the login form.
+   * @returns {ReadinessCheck[]} The readiness checks for the login form.
+   */
   getReadinessChecks(): ReadinessCheck[] {
     return [
       {
@@ -38,11 +42,19 @@ export class LoginForm extends BaseComponent {
     ];
   }
 
+  /**
+   * Fills the login form with the given email and password.
+   * @param {string} email - The email to fill in the form.
+   * @param {string} password - The password to fill in the form.
+   */
   async fill(email: string, password: string): Promise<void> {
     await this.emailInput.fill(email);
     await this.passwordInput.fill(password);
   }
 
+  /**
+   * Submits the login form.
+   */
   async submit(): Promise<void> {
     await this.signInButton.click();
   }

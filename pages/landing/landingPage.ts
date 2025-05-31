@@ -18,6 +18,10 @@ export class LandingPage extends BasePage {
     this.featureTabs = new FeatureTabs(page);
   }
 
+  /**
+   * Returns the readiness checks for the landing page.
+   * @returns {ReadinessCheck[]} The readiness checks for the landing page.
+   */
   getReadinessChecks(): ReadinessCheck[] {
     return [
       {
@@ -38,11 +42,17 @@ export class LandingPage extends BasePage {
     ];
   }
 
+  /**
+   * Opens the landing page.
+   */
   async open() {
     await this.goto();
     await this.waitUntilReady();
   }
 
+  /**
+   * Clicks the sign in button in the header.
+   */
   async clickSignInBtn() {
     await this.header.signInButton.click();
   }

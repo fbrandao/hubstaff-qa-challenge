@@ -12,6 +12,10 @@ export class HeroForm extends BaseComponent {
     this.createAccountBtn = page.getByTestId('create_account');
   }
 
+  /**
+   * Returns the readiness checks for the hero form.
+   * @returns {ReadinessCheck[]} The readiness checks for the hero form.
+   */
   getReadinessChecks(): ReadinessCheck[] {
     return [
       {
@@ -27,10 +31,17 @@ export class HeroForm extends BaseComponent {
     ];
   }
 
+  /**
+   * Fills the email input with the given email.
+   * @param {string} email - The email to fill in the input.
+   */
   async fillEmail(email: string) {
     await this.emailInput.fill(email);
   }
 
+  /**
+   * Submits the hero form.
+   */
   async submit() {
     await this.createAccountBtn.click();
   }

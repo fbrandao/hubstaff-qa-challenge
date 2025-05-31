@@ -18,10 +18,17 @@ export class Header extends BaseComponent {
     this.signInButton = page.getByTestId('sign_in_button');
   }
 
+  /**
+   * Clicks the free trial button.
+   */
   async clickFreeTrial() {
     await this.trialButton.click();
   }
 
+  /**
+   * Returns the readiness checks for the header.
+   * @returns {ReadinessCheck[]} The readiness checks for the header.
+   */
   getReadinessChecks(): ReadinessCheck[] {
     return [
       {

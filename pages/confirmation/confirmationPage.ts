@@ -7,7 +7,7 @@ export class ConfirmationPage extends BasePage {
   readonly subtitle: Locator;
   readonly resendButton: Locator;
   readonly backToSignInLink: Locator;
-  protected url = '/confirmation_sent';
+  protected baseUrl = '/confirmation_sent';
 
   constructor(page: Page) {
     super(page);
@@ -17,6 +17,10 @@ export class ConfirmationPage extends BasePage {
     this.backToSignInLink = this.page.getByRole('link', { name: 'Back to sign in' });
   }
 
+  /**
+   * Returns the readiness checks for the confirmation page.
+   * @returns {ReadinessCheck[]} The readiness checks for the confirmation page.
+   */
   getReadinessChecks(): ReadinessCheck[] {
     return [
       {

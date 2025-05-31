@@ -7,6 +7,7 @@ import { SignInPage } from '../pages/signin/signInPage';
 import { ProjectsPage } from '../pages/projects/projectsPage';
 import { CreatePaymentsPage } from '../pages/financials/teamPayments/createPaymentsPage';
 import { PaymentSummaryPage } from '../pages/financials/teamPayments/paymentSummaryPage';
+import { setCookieConsent } from '../utils/cookies/cookieConsent';
 
 type PageFixtures = {
   landingPage: LandingPage;
@@ -22,16 +23,19 @@ type PageFixtures = {
 export const test = base.extend<PageFixtures>({
   landingPage: async ({ page }: { page: Page }, use: (page: LandingPage) => Promise<void>) => {
     const pageObj = new LandingPage(page);
+    await setCookieConsent(pageObj.context);
     await use(pageObj);
   },
 
   signInPage: async ({ page }: { page: Page }, use: (page: SignInPage) => Promise<void>) => {
     const pageObj = new SignInPage(page);
+    await setCookieConsent(pageObj.context);
     await use(pageObj);
   },
 
   signUpPage: async ({ page }: { page: Page }, use: (page: SignUpPage) => Promise<void>) => {
     const pageObj = new SignUpPage(page);
+    await setCookieConsent(pageObj.context);
     await use(pageObj);
   },
 
