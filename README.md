@@ -298,11 +298,11 @@ docker run --env-file .env -v $(pwd)/reports:/app/reports hubstaff-qa
 
 The following environment variables can be passed to the container:
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `TEST_TYPE` | Type of tests to run (`unit`, `e2e`, or unset for both) | unset |
-| `BROWSER` | Browser to use for E2E tests (`Chrome`, `Firefox`, `Safari`, or `all`) | `all` |
-| `CI` | Whether running in CI environment | `true` |
+| Variable    | Description                                                            | Default |
+| ----------- | ---------------------------------------------------------------------- | ------- |
+| `TEST_TYPE` | Type of tests to run (`unit`, `e2e`, or unset for both)                | unset   |
+| `BROWSER`   | Browser to use for E2E tests (`Chrome`, `Firefox`, `Safari`, or `all`) | `all`   |
+| `CI`        | Whether running in CI environment                                      | `true`  |
 
 ---
 
