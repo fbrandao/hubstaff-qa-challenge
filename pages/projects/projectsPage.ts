@@ -100,33 +100,19 @@ export class ProjectsPage extends BasePage {
   }
 
   /**
-   * Generates a unique project name based on the provided base name
-   * @param {string} baseName - The base name to generate a unique project name from.
-   * @returns {string} The unique project name.
+   * Generates a unique project name using the provided base name.
+   * @param {string} baseName - A guaranteed-unique base name (e.g., includes test title + browser).
+   * @returns {string} The fully qualified project name.
    */
   async generateUniqueProjectName(baseName?: string): Promise<string> {
     const trimmedBase = (baseName || faker.company.name())
       .trim()
-      .slice(0, 100 - this.browserPrefix.length - 3);
+      .slice(0, 100 - this.browserPrefix.length - 1); // -1 for space
     if (!trimmedBase) {
       throw new Error('Base name cannot be empty or whitespace only');
     }
 
-    const existingNames = await this.getProjectNames();
-    let candidate = `${this.browserPrefix} ${trimmedBase}`;
-    let suffix = 1;
-
-    while (existingNames.includes(candidate)) {
-      const suffixStr = ` ${suffix}`;
-      const truncated = trimmedBase.slice(
-        0,
-        100 - this.browserPrefix.length - suffixStr.length - 3,
-      );
-      candidate = `${this.browserPrefix} ${truncated}${suffixStr}`;
-      suffix++;
-    }
-
-    return candidate;
+    return `${this.browserPrefix} ${trimmedBase}`;
   }
 
   /**
