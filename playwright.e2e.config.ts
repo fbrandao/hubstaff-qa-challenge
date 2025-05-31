@@ -7,7 +7,7 @@ import os from 'os';
  */
 export default defineConfig({
   /* The global test directory */
-  testDir: './tests/e2e/',
+  testDir: './tests',
   timeout: isCI ? 180000 : 60000,
   expect: {
     timeout: 10000,
@@ -64,17 +64,19 @@ export default defineConfig({
 
   /* Define separate projects */
   projects: [
-    /* 🔹 E2E TESTS (Desktop Browsers) */
     {
       name: 'E2E - Chrome',
+      testMatch: /e2e\/.*\.spec\.ts/,
       use: { ...devices['Desktop Chrome'], channel: 'chromium' },
     },
     {
       name: 'E2E - Firefox',
+      testMatch: /e2e\/.*\.spec\.ts/,
       use: { ...devices['Desktop Firefox'], channel: 'firefox' },
     },
     {
       name: 'E2E - Safari',
+      testMatch: /e2e\/.*\.spec\.ts/,
       use: { ...devices['Desktop Safari'], channel: 'webkit' },
     },
   ],

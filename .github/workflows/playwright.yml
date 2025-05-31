@@ -55,9 +55,37 @@ jobs:
       - name: Run Lint Check
         run: npm run lint:check
 
+  unit-tests:
+    name: Playwright Unit Tests
+    needs: lint-and-format
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.52.0-jammy
+      options: --user 1001
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Restore node_modules Cache
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
+
+      - name: Run Unit Tests
+        run: npm run test:unit
+
+      - name: Upload Unit Test Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: unit-test-report
+          path: reports/unit
+          retention-days: 14
+
   e2e-tests:
     name: Playwright E2E Tests
-    needs: [lint-and-format]
+    needs: unit-tests
     runs-on: ubuntu-latest
     container:
       image: mcr.microsoft.com/playwright:v1.52.0-jammy
@@ -72,10 +100,12 @@ jobs:
         with:
           path: node_modules
           key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
+
       - name: Ensure ctrf report folder exists
         run: mkdir -p ctrf/reports/e2e
-      - name: Run Playwright Tests
-        run: npm run test
+
+      - name: Run E2E Tests
+        run: npm run test:e2e
         env:
           BASE_URL: ${{ vars.BASE_URL }}
           MARKETING_BASE_URL: ${{ vars.MARKETING_BASE_URL }}
@@ -86,7 +116,8 @@ jobs:
           TEST_USER_EMAIL: ${{ secrets.TEST_USER_EMAIL }}
           TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
           CI: true
-      - name: Upload Test Report (if exists)
+
+      - name: Upload E2E Test Report
         if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -104,16 +135,16 @@ jobs:
 
   notify-on-failure:
     name: Notify on Failure
-    needs: [e2e-tests]
-    if: always() && needs.e2e-tests.result == 'failure'
+    needs: [unit-tests, e2e-tests]
+    if: failure()
     runs-on: ubuntu-latest
     steps:
-      - name: Download E2E Test Report
+      - name: Download Artifacts
         uses: actions/download-artifact@v4
         with:
-          name: e2e-test-report
           path: downloaded-artifacts
-      - name: Create GitHub Issue
+
+      - name: Create GitHub Issue on Failure
         uses: actions/github-script@v6
         with:
           script: |
@@ -121,39 +152,72 @@ jobs:
             const path = require('path');
 
             function stripAnsi(str) {
-              return str.replace(
-                /[\u001b\u009b][[()#;?]*(?:(?:(?:[a-zA-Z\d]*(?:;[-a-zA-Z\d\/#&.:=?%@~_]*)*)?\u0007)|(?:(?:\d{1,4}(?:;\d{0,4})*)?[a-zA-Z\d]))/g,
-                ''
-              ).replace(/[^\x00-\x7F]/g, "");
+              return str.replace(/[\u001b\u009b][[()#;?]*(?:(?:(?:[a-zA-Z\d]*(?:;[-a-zA-Z\d\/#&.:=?%@~_]*)*)?\u0007)|(?:(?:\d{1,4}(?:;\d{0,4})*)?[a-zA-Z\d]))/g, '')
+                        .replace(/[^\x00-\x7F]/g, '');
             }
 
-            const reportPath = path.resolve("downloaded-artifacts/ctrf/reports/e2e/ctrf.json");
             const runUrl = `https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}`;
             const timestamp = new Date().toISOString();
+            let body = `## ❌ Test Suite Failed\n### 🕒 Timestamp: ${timestamp}\n🔗 [View Workflow Run](${runUrl})\n`;
 
-            let body = `## ❌ Playwright E2E Tests Failed\n ### 🕒 Timestamp: ${timestamp}\n 🔗 [Workflow Run](${runUrl})\n\n`;
+            const unitPath = "downloaded-artifacts/unit-test-report/results.json";
+            if (fs.existsSync(unitPath)) {
+              try {
+                const unitReport = JSON.parse(fs.readFileSync(unitPath, 'utf-8'));
+                const failedSpecs = [];
 
-            if (fs.existsSync(reportPath)) {
-              const report = JSON.parse(fs.readFileSync(reportPath, 'utf-8'));
-              const tests = Array.isArray(report?.results?.tests) ? report.results.tests : [];
+                for (const suite of unitReport.suites || []) {
+                  for (const childSuite of suite.suites || []) {
+                    for (const specGroup of childSuite.suites || []) {
+                      for (const spec of specGroup.specs || []) {
+                        const hasFailure = spec.tests?.some(t =>
+                          t.results?.some(r => r.status === 'failed')
+                        );
+                        if (hasFailure) {
+                          failedSpecs.push({
+                            file: spec.file,
+                            title: `${childSuite.title} > ${specGroup.title} > ${spec.title}`,
+                            message: spec.tests?.[0]?.results?.[0]?.errors?.[0]?.message || 'No error message'
+                          });
+                        }
+                      }
+                    }
+                  }
+                }
 
-              const failedTests = tests
-                .filter(test => test.status === 'failed')
-                .map(test => {
-                  return `### ❌ ${stripAnsi(test.name)}\n` +
-                         `File: \`${stripAnsi(test.filePath)}\`\n` +
-                         `Error:\n\`\`\`\n${stripAnsi(test.message || 'No message')}\n\`\`\`\n---`;
-                }).join('\n');
+                if (failedSpecs.length > 0) {
+                  body += `\n### ❌ Unit Test Failures:\n`;
+                  for (const fail of failedSpecs) {
+                    body += `\n- **${stripAnsi(fail.title)}**\nFile: \`${fail.file}\`\n\`\`\`\n${stripAnsi(fail.message)}\n\`\`\`\n`;
+                  }
+                }
+              } catch (err) {
+                body += `⚠️ Failed to parse unit test report: ${err.message}`;
+              }
+            }
 
-              body += `## Failed Tests\n${failedTests || 'No failed test details found.'}`;
-            } else {
-              body += `⚠️ No CTRF report found.`;
+            const e2ePath = "downloaded-artifacts/e2e-test-report/ctrf/reports/e2e/ctrf.json";
+            if (fs.existsSync(e2ePath)) {
+              try {
+                const e2e = JSON.parse(fs.readFileSync(e2ePath, 'utf-8'));
+                const tests = Array.isArray(e2e?.results?.tests) ? e2e.results.tests : [];
+
+                const failed = tests.filter(t => t.status === 'failed');
+                if (failed.length > 0) {
+                  body += `\n### ❌ E2E Test Failures:\n`;
+                  for (const test of failed) {
+                    body += `\n- **${stripAnsi(test.name)}**\nFile: \`${stripAnsi(test.filePath)}\`\n\`\`\`\n${stripAnsi(test.message || 'No message')}\n\`\`\`\n`;
+                  }
+                }
+              } catch (err) {
+                body += `⚠️ Failed to parse e2e test report: ${err.message}`;
+              }
             }
 
             github.rest.issues.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              title: "[CI Failed] Playwright E2E Tests",
+              title: "[CI Failed] Playwright Tests",
               body,
-              labels: ["CI Failure", "Playwright"]
+              labels: ["CI Failure", "Playwright", "Needs Triage"]
             });

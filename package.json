@@ -11,7 +11,9 @@
     "lint:check": "eslint . --ext .ts",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "validate": "npm run lint:check && npm run format:check"
+    "validate": "npm run lint:check && npm run format:check",
+    "test:unit": "npx playwright test --config=playwright.unit.config.ts",
+    "test:e2e": "npx playwright test --config=playwright.e2e.config.ts"
   },
   "repository": {
     "type": "git",

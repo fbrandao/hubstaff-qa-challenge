@@ -10,7 +10,7 @@ export interface HealthCheck {
 /**
  * Registry for managing health checks.
  */
-class HealthCheckRegistry {
+export class HealthCheckRegistry {
   private checks: HealthCheck[] = [];
 
   add(check: HealthCheck) {
