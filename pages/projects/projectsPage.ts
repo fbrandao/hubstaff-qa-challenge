@@ -1,4 +1,4 @@
-import { Page, expect } from '@playwright/test';
+import { Page, expect, test } from '@playwright/test';
 import { BasePage } from '../base/basePage';
 import { ReadinessCheck } from '../base/types';
 import { NewProjectModal } from './modals/newProjectModal';
@@ -7,9 +7,11 @@ import { faker } from '@faker-js/faker';
 
 export class ProjectsPage extends BasePage {
   protected baseUrl = '/projects';
+  private readonly browserPrefix: string;
 
   constructor(page: Page) {
     super(page, 'app');
+    this.browserPrefix = `[${test.info().project.name}]`;
   }
 
   readonly addProjectButton = this.page.getByText('Add project');
@@ -103,19 +105,24 @@ export class ProjectsPage extends BasePage {
    * @returns {string} The unique project name.
    */
   async generateUniqueProjectName(baseName?: string): Promise<string> {
-    const trimmedBase = (baseName || faker.company.name()).trim().slice(0, 100);
+    const trimmedBase = (baseName || faker.company.name())
+      .trim()
+      .slice(0, 100 - this.browserPrefix.length - 3);
     if (!trimmedBase) {
       throw new Error('Base name cannot be empty or whitespace only');
     }
 
     const existingNames = await this.getProjectNames();
-    let candidate = trimmedBase;
+    let candidate = `${this.browserPrefix} ${trimmedBase}`;
     let suffix = 1;
 
     while (existingNames.includes(candidate)) {
       const suffixStr = ` ${suffix}`;
-      const truncated = trimmedBase.slice(0, 100 - suffixStr.length);
-      candidate = `${truncated}${suffixStr}`;
+      const truncated = trimmedBase.slice(
+        0,
+        100 - this.browserPrefix.length - suffixStr.length - 3,
+      );
+      candidate = `${this.browserPrefix} ${truncated}${suffixStr}`;
       suffix++;
     }
 
@@ -155,17 +162,22 @@ export class ProjectsPage extends BasePage {
   }
 
   /**
-   * Cleans up test projects by deleting any that match the test pattern
+   * Cleans up test projects by deleting any that match the current browser's test pattern
    */
   async cleanupTestProjects() {
     const projectNames = await this.getProjectNames();
+    const browserProjects = projectNames.filter(name => name.startsWith(this.browserPrefix));
 
-    if (projectNames.length > 0) {
-      for (const name of projectNames) {
+    if (browserProjects.length > 0) {
+      for (const name of browserProjects) {
         await this.deleteProject(name);
       }
     }
 
-    expect(await this.getProjectNames()).toHaveLength(0);
+    const remainingProjects = await this.getProjectNames();
+    const remainingBrowserProjects = remainingProjects.filter(name =>
+      name.startsWith(this.browserPrefix),
+    );
+    expect(remainingBrowserProjects).toHaveLength(0);
   }
 }
