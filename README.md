@@ -195,10 +195,10 @@ TEST_USER_PASSWORD=your-test-user-password
 > The `.env` file is **only required for local or Docker runs**.  
 > In **CI/CD**, values are securely managed via **GitHub Actions**:
 
-| Type               | Storage Location     | Example Variables                                                   |
-|--------------------|----------------------|----------------------------------------------------------------------|
-| 🔒 Secrets         | GitHub Secrets       | `MAILSLURP_API_KEY`, `TEST_USER_EMAIL`, `TEST_USER_PASSWORD`       |
-| 🌍 Env Variables   | GitHub Variables     | `BASE_URL`, `APP_BASE_URL`, `MARKETING_API_BASE`, `ACCOUNT_API_BASE` |
+| Type             | Storage Location | Example Variables                                                    |
+| ---------------- | ---------------- | -------------------------------------------------------------------- |
+| 🔒 Secrets       | GitHub Secrets   | `MAILSLURP_API_KEY`, `TEST_USER_EMAIL`, `TEST_USER_PASSWORD`         |
+| 🌍 Env Variables | GitHub Variables | `BASE_URL`, `APP_BASE_URL`, `MARKETING_API_BASE`, `ACCOUNT_API_BASE` |
 
 ### 3. Run Tests Locally
 
