@@ -273,7 +273,17 @@ docker build -t hubstaff-qa .
 ### ▶ Run Tests
 
 ```bash
+# Run all tests (both unit and E2E)
 docker run --env-file .env hubstaff-qa
+
+# Run only unit tests
+docker run --env-file .env -e TEST_TYPE=unit hubstaff-qa
+
+# Run only E2E tests
+docker run --env-file .env -e TEST_TYPE=e2e hubstaff-qa
+
+# Run E2E tests with a specific browser
+docker run --env-file .env -e TEST_TYPE=e2e -e BROWSER=Chrome hubstaff-qa
 ```
 
 ### 📦 Volume Mount (optional)
@@ -284,11 +294,15 @@ To retain test results:
 docker run --env-file .env -v $(pwd)/reports:/app/reports hubstaff-qa
 ```
 
-### 🔁 Run with a Specific Browser
+### 🔧 Environment Variables
 
-```bash
-docker run --env-file .env -e BROWSER=Chrome hubstaff-qa
-```
+The following environment variables can be passed to the container:
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `TEST_TYPE` | Type of tests to run (`unit`, `e2e`, or unset for both) | unset |
+| `BROWSER` | Browser to use for E2E tests (`Chrome`, `Firefox`, `Safari`, or `all`) | `all` |
+| `CI` | Whether running in CI environment | `true` |
 
 ---
 
