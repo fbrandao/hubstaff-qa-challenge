@@ -1,5 +1,10 @@
 import { BrowserContext } from '@playwright/test';
 
+/**
+ * Sets the cookie consent for the given browser context.
+ * @param {BrowserContext} context - The browser context to set the cookie consent for.
+ * @returns {Promise<void>} A promise that resolves when the cookie consent is set.
+ */
 export async function setCookieConsent(context: BrowserContext) {
   const timestamp = Date.now();
   const region = 'pt';

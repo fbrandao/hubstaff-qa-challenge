@@ -7,6 +7,9 @@ export interface HealthCheck {
   validate?: (response: APIResponse) => boolean;
 }
 
+/**
+ * Registry for managing health checks.
+ */
 class HealthCheckRegistry {
   private checks: HealthCheck[] = [];
 
@@ -27,6 +30,11 @@ class HealthCheckRegistry {
 
 export const healthChecks = new HealthCheckRegistry();
 
+/**
+ * Runs health checks for the application.
+ * @param {APIRequestContext} request - The request context to use for the health checks.
+ * @returns {Promise<void>} A promise that resolves when all health checks are complete.
+ */
 export async function runHealthChecks(request: APIRequestContext) {
   logger.header('Health Checks');
 

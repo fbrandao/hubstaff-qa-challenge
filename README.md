@@ -35,24 +35,41 @@ A modern end-to-end (E2E) test automation framework built with **Playwright + Ty
 - Every page is encapsulated in a class
 - Shared components are modularized
 - Common base classes reduce duplication
+- Fixture initialization for faster and cleaner test execution
 
 Example usage:
 
 ```ts
+// Component
 class SignInForm extends BaseComponent {
+  readonly emailInput = this.page.getByTestId('email-input');
+  readonly passwordInput = this.page.getByTestId('password-input');
+  readonly submitButton = this.page.getByTestId('submit-button');
+
   async login(email: string, password: string) {
-    await this.fillInput('email-input', email);
-    await this.fillInput('password-input', password);
-    await this.clickButton('submit-button');
+    await this.emailInput.fill(email);
+    await this.passwordInput.fill(password);
+    await this.submitButton.click();
   }
 }
 
-class MyCustomPage extends BasePage {
-  signInForm = new SignInForm(this.page, this.page.locator('form'));
-  async login(email: string, password: string) {
-    await this.signInForm.login(email, password);
+// Page
+class SignInPage extends BasePage {
+  protected baseUrl = '/signin';
+  readonly signInForm: SignInForm;
+
+  constructor(page: Page) {
+    super(page);
+    this.signInForm = new SignInForm(page);
   }
 }
+
+// Example
+test('should sign in successfully', async ({ page, signInPage }) => {
+  await signInPage.goto();
+  await signInPage.signInForm.login('user@example.com', 'password123');
+  await expect(page).toHaveURL(/dashboard/);
+});
 ```
 
 ### ✅ Readiness System
@@ -138,15 +155,17 @@ test('should load dashboard successfully', async ({ page }) => {
 
 ## 🚀 Getting Started
 
-### 1. Install Dependencies
+### 1. 📦 Install Dependencies
 
-```bash
+```
 npm install
 ```
 
-### 2. Setup `.env` File
+---
 
-Create a `.env` in the root with:
+### 2. ⚙️ Configure Environment Variables
+
+Create a `.env` file in the **project root** with the following content:
 
 ```
 BASE_URL=https://hubstaff.com
@@ -159,14 +178,27 @@ TEST_USER_EMAIL=your-test-user-email
 TEST_USER_PASSWORD=your-test-user-password
 ```
 
-🔑 Register for free and retrieve your API key from [MailSlurp](https://mailslurp.com)
+#### 🔑 Get Your MailSlurp API Key
 
-👤 For the test user credentials, you can use any valid Hubstaff account or create a new one specifically for testing.
+- Register for a free account at [mailslurp.com](https://mailslurp.com/)
+- After logging in, navigate to [your API Key page](https://app.mailslurp.com/account/api)
 
-⚠️ **Important Note**: The `.env` file is only needed for local runs or docker runs. In CI/CD, all environment variables and secrets are securely stored in GitHub:
+#### 👤 Test User Account
 
-- Environment variables (BASE_URL, APP_BASE_URL, etc.) are stored as GitHub Variables
-- Sensitive data (MAILSLURP_API_KEY, TEST_USER_EMAIL, TEST_USER_PASSWORD) are stored as GitHub Secrets
+- Use any valid Hubstaff account credentials
+- Alternatively, create a dedicated test account for automation purposes
+
+---
+
+### ⚠️ Important Note
+
+> The `.env` file is **only required for local or Docker runs**.  
+> In **CI/CD**, values are securely managed via **GitHub Actions**:
+
+| Type               | Storage Location     | Example Variables                                                   |
+|--------------------|----------------------|----------------------------------------------------------------------|
+| 🔒 Secrets         | GitHub Secrets       | `MAILSLURP_API_KEY`, `TEST_USER_EMAIL`, `TEST_USER_PASSWORD`       |
+| 🌍 Env Variables   | GitHub Variables     | `BASE_URL`, `APP_BASE_URL`, `MARKETING_API_BASE`, `ACCOUNT_API_BASE` |
 
 ### 3. Run Tests Locally
 

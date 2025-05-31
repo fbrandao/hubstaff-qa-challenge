@@ -1,6 +1,12 @@
 import type { BrowserContext } from '@playwright/test';
 import type { Cookie } from 'tough-cookie';
 
+/**
+ * Injects cookies into a browser context.
+ * @param {Cookie[]} cookies - The cookies to inject.
+ * @param {BrowserContext} context - The browser context to inject the cookies into.
+ * @param {string} domain - The domain to inject the cookies into.
+ */
 export async function injectCookiesIntoContext(
   cookies: Cookie[],
   context: BrowserContext,

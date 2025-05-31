@@ -25,6 +25,11 @@ export class EmailClient {
     return this.mailslurp.deleteInbox(inboxId);
   }
 
+  /**
+   * Creates a new inbox for the email client.
+   * @param {CreateInboxDto} options - The options for creating the inbox.
+   * @returns {Promise<InboxDto>} The created inbox.
+   */
   async createInbox(options: CreateInboxDto = {}): Promise<InboxDto> {
     const enhancedOptions = {
       ...options,
@@ -37,6 +42,10 @@ export class EmailClient {
     return inbox;
   }
 
+  /**
+   * Cleans up all created inboxes.
+   * @returns {Promise<void>} A promise that resolves when all inboxes are deleted.
+   */
   async cleanupInboxes(): Promise<void> {
     for (const inbox of this.createdInboxes) {
       try {

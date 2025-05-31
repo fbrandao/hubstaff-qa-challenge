@@ -2,6 +2,10 @@ import { BaseApiClient } from './baseApiClient';
 import { config } from '../config';
 import { AxiosResponse } from 'axios';
 import { SignupPayload } from './types';
+
+/**
+ * API client for the marketing API.
+ */
 export class MarketingApiClient extends BaseApiClient {
   protected sessionEndpoint = config.api.marketing.sessionEndpoint;
 
@@ -12,6 +16,10 @@ export class MarketingApiClient extends BaseApiClient {
     super(config.api.marketing.baseUrl);
   }
 
+  /**
+   * Fetches the CSRF token from the session endpoint.
+   * @returns {Promise<string>} The CSRF token.
+   */
   protected async fetchCsrfToken(): Promise<string> {
     if (this.csrfToken) return this.csrfToken;
 
@@ -22,6 +30,11 @@ export class MarketingApiClient extends BaseApiClient {
     return token;
   }
 
+  /**
+   * Signs up a new user.
+   * @param {SignupPayload} payload - The payload for the signup request.
+   * @returns {Promise<AxiosResponse>} The response from the signup request.
+   */
   async signUp(payload: SignupPayload): Promise<AxiosResponse> {
     const formData = new FormData();
     formData.append('utf8', '✓');

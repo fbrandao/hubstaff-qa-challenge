@@ -1,5 +1,9 @@
 import { getEnvVar } from '../env';
 
+/**
+ * Fixed users for testing. These are loaded from the environment variables.
+ * @type {Array<{role: string, email: string, password: string}>}
+ */
 export const fixedUsers = [
   {
     role: 'owner',

@@ -1,5 +1,8 @@
 import { BrowserContext } from '@playwright/test';
 
+/**
+ * Payload for the signup request.
+ */
 export interface SignupPayload {
   firstName: string;
   lastName: string;
@@ -10,6 +13,9 @@ export interface SignupPayload {
   customAnonymousId?: string;
 }
 
+/**
+ * Payload for the login request.
+ */
 export interface LoginPayload {
   email: string;
   password: string;
@@ -17,6 +23,9 @@ export interface LoginPayload {
   domain?: string;
 }
 
+/**
+ * Payload for the login and save storage state request.
+ */
 export interface LoginAndSaveStorageStatePayload {
   email: string;
   password: string;

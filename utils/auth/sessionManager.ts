@@ -2,6 +2,10 @@ import { AccountApiClient } from '../api/accountApiClient';
 import { logger } from '../logger';
 import { getStoragePathForEmail, users } from './config';
 
+/**
+ * Creates storage states for all users.
+ * @returns {Promise<void>} A promise that resolves when all storage states are created.
+ */
 export async function createStorageStates() {
   const accountApi = new AccountApiClient();
 

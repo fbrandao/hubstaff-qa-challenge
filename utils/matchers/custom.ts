@@ -2,6 +2,11 @@
 import type { BasePage } from '../../pages/base/basePage';
 import type { BaseComponent } from '../../pages/base/baseComponent';
 
+/**
+ * Custom matchers for Playwright tests.
+ * @param {BasePage | BaseComponent} received - The page or component to check.
+ * @returns {Promise<{pass: boolean, message: () => string}>} A promise that resolves to the result of the check.
+ */
 export const customMatchers = {
   async toBeReady(received: BasePage | BaseComponent) {
     try {

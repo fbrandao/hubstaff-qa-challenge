@@ -8,6 +8,9 @@ import fs from 'fs';
 import path from 'path';
 import { LoginAndSaveStorageStatePayload } from './types';
 
+/**
+ * API client for the account API.
+ */
 export class AccountApiClient extends BaseApiClient {
   constructor() {
     if (!config.api.account.baseUrl) {
@@ -16,6 +19,10 @@ export class AccountApiClient extends BaseApiClient {
     super(config.api.account.baseUrl);
   }
 
+  /**
+   * Fetches the CSRF token from the login page.
+   * @returns {Promise<string>} The CSRF token.
+   */
   protected async fetchCsrfToken(): Promise<string> {
     if (this.csrfToken) return this.csrfToken;
 
@@ -42,6 +49,8 @@ export class AccountApiClient extends BaseApiClient {
 
   /**
    * Logs in with a valid user and saves storage state to disk.
+   * @param {LoginAndSaveStorageStatePayload} payload - The payload for the login request.
+   * @returns {Promise<void>} A promise that resolves when the login and storage state are saved.
    */
   async loginAndSaveStorageState({
     email,
@@ -81,12 +90,22 @@ export class AccountApiClient extends BaseApiClient {
     await apiContext.storageState({ path: stateFilePath });
   }
 
+  /**
+   * Confirms an account with a given token.
+   * @param {string} token - The token to confirm the account with.
+   * @returns {Promise<AxiosResponse>} The response from the confirm account request.
+   */
   async confirmAccount(token: string): Promise<AxiosResponse> {
     return this.request(`/confirm_account/${token}`, {
       method: 'GET',
     });
   }
 
+  /**
+   * Confirms an account from an email.
+   * @param {ConfirmAccountFromEmailPayload} payload - The payload for the confirm account from email request.
+   * @returns {Promise<AxiosResponse>} The response from the confirm account from email request.
+   */
   async confirmAccountFromEmail({
     emailClient,
     inboxId,

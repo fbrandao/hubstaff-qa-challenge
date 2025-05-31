@@ -25,7 +25,12 @@ if (isLocal) {
   dotenv.config({ path: path.resolve(process.cwd(), '.env') });
 }
 
-// Always returns string if required, else string | undefined
+/**
+ * Retrieves an environment variable with optional error handling.
+ * @param {string} key - The name of the environment variable to retrieve.
+ * @param {boolean} required - Whether the variable is required.
+ * @returns {string} The value of the environment variable.
+ */
 export function getEnvVar(key: string, required = true): string {
   const val = process.env[key];
   if (!val && required) throw new Error(`❌ Missing required env var: ${key}`);
