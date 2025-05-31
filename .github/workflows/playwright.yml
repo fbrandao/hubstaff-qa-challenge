@@ -86,13 +86,6 @@ jobs:
           TEST_USER_EMAIL: ${{ secrets.TEST_USER_EMAIL }}
           TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
           CI: true
-      - name: List all files and folders (root)
-        if: always()
-        run: ls -lR
-      - name: List reports/e2e directory
-        if: always()
-        run: ls -l reports/e2e
-
       - name: Upload Test Report (if exists)
         if: always()
         uses: actions/upload-artifact@v4
@@ -120,11 +113,6 @@ jobs:
         with:
           name: e2e-test-report
           path: downloaded-artifacts
-      - name: List downloaded folders and files
-        run: |
-          echo "📁 Directory tree:"
-          ls -lR downloaded-artifacts
-
       - name: Create GitHub Issue
         uses: actions/github-script@v6
         with:
