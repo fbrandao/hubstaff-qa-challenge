@@ -13,6 +13,7 @@ A modern end-to-end (E2E) test automation framework built with **Playwright + Ty
 
 ```
 ├── tests/e2e/               # E2E test specifications
+├── tests/unit/              # Unit test files
 ├── pages/                  # Page Object Models
 │   ├── base/               # Base page/component classes
 │   ├── common/             # Shared components
@@ -200,12 +201,40 @@ TEST_USER_PASSWORD=your-test-user-password
 | 🔒 Secrets       | GitHub Secrets   | `MAILSLURP_API_KEY`, `TEST_USER_EMAIL`, `TEST_USER_PASSWORD`         |
 | 🌍 Env Variables | GitHub Variables | `BASE_URL`, `APP_BASE_URL`, `MARKETING_API_BASE`, `ACCOUNT_API_BASE` |
 
-### 3. Run Tests Locally
+---
+
+### 3. 📌 Run Tests Locally
 
 ```bash
-npm test            # Run all tests
-npm run test:ui     # Interactive UI mode
+npm test             # Run all tests using default config (E2E)
+npm run test:e2e     # Run only E2E tests
+npm run test:unit    # Run unit tests
+npm run test:ui      # Launch the Playwright UI test runner
 ```
+
+---
+
+## 🎁 Bonus: Unit Tests Added
+
+Although not part of the original exercise requirements, this project includes a suite of **Playwright-based unit tests** for utility and helper logic. This demonstrates:
+
+- Testing non-UI logic using Playwright as a test runner
+- Structured test separation (`tests/unit/` directory)
+- Shared CI config and reporting setup
+- Bonus coverage of internal utilities (e.g., `getBaseUrl`, `buildUrl`, `healthcheck`)
+
+Run them locally:
+
+```bash
+npm run test:unit
+```
+
+They are fully integrated into the GitHub Actions pipeline and produce:
+
+- JSON, JUnit, and HTML reports (`/reports/unit`)
+- Auto-issue creation on failure (same as E2E)
+
+> 🧪 Example: See `tests/unit/config/url.test.ts` and `tests/unit/email/emailExtractor.test.ts`
 
 ---
 
@@ -220,12 +249,12 @@ npm run format       # Format with Prettier
 
 ## 📊 Test Reports
 
-After test runs, reports are saved in `reports/e2e/`:
+After test runs, reports are saved in `reports/e2e/` and `reports/unit/`:
 
 - `index.html`: HTML summary
 - `results.json`: JSON for CI parsing
 - `results.xml`: JUnit format
-- `ctrf.json`: Common Test Results Format
+- `ctrf.json`: Common Test Results Format (E2E only)
 
 > 📝 **Example**: See a real CTRF report in action from our [CI run](https://github.com/fbrandao/hubstaff-qa-challenge/actions/runs/15342886456) with some tests failing (forced failures)
 
@@ -268,6 +297,7 @@ docker run --env-file .env -e BROWSER=Chrome hubstaff-qa
 Includes GitHub Actions config with:
 
 - ✅ Parallel browser tests (Chrome, Firefox, Safari)
+- ✅ Unit test run before E2E
 - ✅ Retry logic
 - ✅ Report publishing
 - ✅ CTRF and GitHub issue reporting
@@ -288,8 +318,8 @@ This project includes automated failure reporting through GitHub Actions.
 
 ### 🔁 How It Works
 
-- Whenever **E2E tests fail** on CI (`main` or pull requests), the workflow:
-  1. Downloads the CTRF report (`ctrf.json`)
+- Whenever **unit or E2E tests fail** on CI (`main` or pull requests), the workflow:
+  1. Downloads the report (CTRF for E2E, JSON for unit)
   2. Extracts failed tests and stack traces
   3. Opens a **GitHub Issue** with:
      - Timestamp of failure
@@ -301,8 +331,8 @@ This project includes automated failure reporting through GitHub Actions.
 ### 🛠 Setup Details
 
 - The issue is created via [`actions/github-script`](https://github.com/actions/github-script)
-- Triggered only when the E2E job fails (`needs.e2e-tests.result == 'failure'`)
-- Output format is based on CTRF JSON for consistency
+- Triggered only when the test job fails
+- Output format is based on CTRF and JSON
 
 ### 📌 Benefits
 
